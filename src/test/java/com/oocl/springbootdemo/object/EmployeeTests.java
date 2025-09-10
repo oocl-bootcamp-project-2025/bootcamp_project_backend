@@ -180,7 +180,7 @@ class EmployeeTests {
     }
 
     @Test
-    void should_delete_employee_when_delete_given_a_valid_id() throws Exception {
+    void should_update_activeStatus_when_delete_given_a_valid_id() throws Exception {
         String requestBody = """
                 {
                     "name": "John Smith",
@@ -199,6 +199,7 @@ class EmployeeTests {
         mockMvc.perform(delete("/employees/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
+                .andExpect(jsonPath("$.activeStatus").value(false))
                 .andExpect(status().isNoContent());
     }
 
