@@ -1,5 +1,6 @@
-package com.oocl.springbootdemo;
+package com.oocl.springbootdemo.object;
 
+import com.oocl.springbootdemo.EmployeeNotAmoungLegalAgeException;
 import com.oocl.springbootdemo.repository.EmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -222,5 +224,88 @@ class EmployeeTests {
                 .andExpect(jsonPath("$[0].id").value(3))
                 .andExpect(jsonPath("$[1].id").value(4))
                 .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    @Test
+    void should_get_null_when_get_given_a_invalid_id() throws Exception {
+        String requestBody = """
+                        {
+                            "name": "John Smith",
+                            "age": 30,
+                            "gender": "Male",
+                            "salary": 60000
+                        }
+                """;
+
+        mockMvc.perform(post("/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+
+        mockMvc.perform(get("/employees/10"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_get_null_when_update_given_a_invalid_id() throws Exception {
+        String requestBody = """
+                        {
+                            "name": "John Smith",
+                            "age": 30,
+                            "gender": "Male",
+                            "salary": 60000
+                        }
+                """;
+
+        mockMvc.perform(post("/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+
+        String updatedRequestBody = """
+                        {
+                            "name": "John Smith Updated",
+                            "age": 300,
+                            "gender": "Female",
+                            "salary": 80000
+                        }
+                """;
+
+        mockMvc.perform(put("/employees/10")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updatedRequestBody))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_not_create_when_post_given_age_below_18() throws Exception {
+        String requestBody = """
+                        {
+                            "name": "John Smith",
+                            "age": 17,
+                            "gender": "Male",
+                            "salary": 60000
+                        }
+                """;
+
+        mockMvc.perform(post("/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void should_not_create_when_post_given_age_over_65() throws Exception {
+        String requestBody = """
+                        {
+                            "name": "John Smith",
+                            "age": 66,
+                            "gender": "Male",
+                            "salary": 60000
+                        }
+                """;
+
+        mockMvc.perform(post("/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isBadRequest());
     }
 }
