@@ -1,6 +1,7 @@
 package com.oocl.springbootdemo.service;
 
 import com.oocl.springbootdemo.EmployeeNotAmoungLegalAgeException;
+import com.oocl.springbootdemo.EmployeeNotHavingAcceptablePaidException;
 import com.oocl.springbootdemo.object.Employee;
 import com.oocl.springbootdemo.repository.EmployeeRepository;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,19 @@ class EmployeeServiceTest {
         employee.setSalary(300000.0);
 
         assertThrows(EmployeeNotAmoungLegalAgeException.class, () ->
+                employeeService.create(employee)
+        );
+    }
+
+    @Test
+    void should_not_create_when_post_given_age_over_30_and_salary_below_20000() {
+        Employee employee = new Employee();
+        employee.setName("tom");
+        employee.setAge(31);
+        employee.setGender("Male");
+        employee.setSalary(300.0);
+
+        assertThrows(EmployeeNotHavingAcceptablePaidException.class, () ->
                 employeeService.create(employee)
         );
     }

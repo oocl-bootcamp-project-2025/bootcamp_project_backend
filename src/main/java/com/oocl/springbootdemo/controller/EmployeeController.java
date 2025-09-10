@@ -1,6 +1,7 @@
 package com.oocl.springbootdemo.controller;
 
 import com.oocl.springbootdemo.EmployeeNotAmoungLegalAgeException;
+import com.oocl.springbootdemo.EmployeeNotHavingAcceptablePaidException;
 import com.oocl.springbootdemo.object.Employee;
 import com.oocl.springbootdemo.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class EmployeeController {
         try {
             Map<String, Long> result = employeeService.create(employee);
             return ResponseEntity.status(HttpStatus.CREATED).body(result);
-        } catch (EmployeeNotAmoungLegalAgeException e) {
+        } catch (EmployeeNotAmoungLegalAgeException | EmployeeNotHavingAcceptablePaidException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }

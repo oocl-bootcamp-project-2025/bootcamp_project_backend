@@ -24,7 +24,6 @@ public class EmployeeService {
         if (employee.getAge() >= 30 && employee.getSalary() < 20000) {
             throw new EmployeeNotHavingAcceptablePaidException();
         }
-
         employeeRepository.save(employee);
         return Map.of("id", employee.getId());
     }
