@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -17,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class CompanyTests {
     @Autowired
     private MockMvc mockMvc;
@@ -36,8 +34,8 @@ class CompanyTests {
                 """;
 
         mockMvc.perform(post("/companies")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1));
     }
@@ -51,8 +49,8 @@ class CompanyTests {
                 """;
 
         mockMvc.perform(post("/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody));
 
         mockMvc.perform(get("/companies/1"))
                 .andExpect(status().isOk())
@@ -68,17 +66,15 @@ class CompanyTests {
                 }
                 """;
 
-        mockMvc.perform(post("/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
-
-        mockMvc.perform(post("/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
+        for (int i=0; i<10; i++) {
+            mockMvc.perform(post("/companies")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestBody));
+        }
 
         mockMvc.perform(get("/companies"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));
+                .andExpect(jsonPath("$.length()").value(10));
     }
 
     @Test
@@ -100,15 +96,15 @@ class CompanyTests {
                 """;
 
         mockMvc.perform(put("/companies/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(updatedRequestBody))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(updatedRequestBody))
                 .andExpect(status().isAccepted())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("John Smith Updated"));
     }
 
     @Test
-    void should_delete_company_when_delete_given_a_valid_id() throws Exception {
+    void should_update_activeStatus_when_delete_given_a_valid_id() throws Exception {
         String requestBody = """
                 {
                     "name": "John Smith"
@@ -121,9 +117,7 @@ class CompanyTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1));
 
-        mockMvc.perform(delete("/companies/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+        mockMvc.perform(delete("/companies/1"))
                 .andExpect(status().isNoContent());
     }
 
@@ -131,7 +125,7 @@ class CompanyTests {
     void should_get_companies_when_get_given_page_and_size() throws Exception {
         String requestBody = """
                 {
-                    "name": "John Smith"
+                    "name": "John Smith1"
                 }
                 """;
         for (int i=0; i<10; i++) {
@@ -140,21 +134,19 @@ class CompanyTests {
                     .content(requestBody));
         }
 
-        mockMvc.perform(get("/companies?page=1&size=2")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+        mockMvc.perform(get("/companies?page=0&size=2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(3))
-                .andExpect(jsonPath("$[1].id").value(4))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$.length()").value(2));
     }
 
     @Test
     void should_get_null_when_get_given_a_invalid_id() throws Exception {
         String requestBody = """
-                {
-                    "name": "John Smith"
-                }
+                        {
+                            "name": "John Smith"
+                        }
                 """;
 
         mockMvc.perform(post("/companies")
