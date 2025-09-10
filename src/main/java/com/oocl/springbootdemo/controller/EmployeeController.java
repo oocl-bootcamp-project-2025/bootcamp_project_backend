@@ -1,5 +1,6 @@
 package com.oocl.springbootdemo.controller;
 
+import com.oocl.springbootdemo.EmployeeNotActiveException;
 import com.oocl.springbootdemo.EmployeeNotAmoungLegalAgeException;
 import com.oocl.springbootdemo.EmployeeNotFoundException;
 import com.oocl.springbootdemo.EmployeeNotHavingAcceptablePaidException;
@@ -57,6 +58,8 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(result);
         } catch (EmployeeNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (EmployeeNotActiveException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 

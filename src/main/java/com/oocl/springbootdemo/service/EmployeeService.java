@@ -1,5 +1,6 @@
 package com.oocl.springbootdemo.service;
 
+import com.oocl.springbootdemo.EmployeeNotActiveException;
 import com.oocl.springbootdemo.EmployeeNotAmoungLegalAgeException;
 import com.oocl.springbootdemo.EmployeeNotFoundException;
 import com.oocl.springbootdemo.EmployeeNotHavingAcceptablePaidException;
@@ -41,6 +42,9 @@ public class EmployeeService {
 
     public Employee update(long id, Employee updateEmployee) {
         Employee foundEmployee = get(id);
+        if (!foundEmployee.isActiveStatus()) {
+            throw new EmployeeNotActiveException();
+        }
         return employeeRepository.update(foundEmployee, updateEmployee);
     }
 
