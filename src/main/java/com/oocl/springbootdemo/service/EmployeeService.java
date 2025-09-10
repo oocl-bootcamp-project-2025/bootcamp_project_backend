@@ -17,7 +17,7 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    public Map<String, Long> create(Employee employee) {
+    public Employee create(Employee employee) {
         if (employee.getAge() < 18 || employee.getAge() > 65) {
             throw new EmployeeNotAmoungLegalAgeException();
         }
@@ -25,7 +25,7 @@ public class EmployeeService {
             throw new EmployeeNotHavingAcceptablePaidException();
         }
         employeeRepository.save(employee);
-        return Map.of("id", employee.getId());
+        return employee;
     }
 
     public Employee update(long id, Employee updateEmployee) {

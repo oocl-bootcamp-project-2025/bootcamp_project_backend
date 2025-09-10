@@ -18,6 +18,7 @@ public class EmployeeRepository {
 
     public void save(Employee employee) {
         employee.setId(++id);
+        employee.setActiveStatus(true);
         employees.add(employee);
     }
 
