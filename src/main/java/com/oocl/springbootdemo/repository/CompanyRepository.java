@@ -16,9 +16,10 @@ public class CompanyRepository {
         id = 0;
     }
 
-    public void save(Company company) {
+    public Company save(Company company) {
         company.setId(++id);
         companies.add(company);
+        return company;
     }
 
     public Company findById(long id) {
@@ -40,7 +41,8 @@ public class CompanyRepository {
         return companies;
     }
 
-    public void delete(long id) {
-        companies.remove(companies.stream().filter(company -> company.getId()==id).findFirst().orElse(null));
+    public Company delete(Company target) {
+        companies.remove(target);
+        return null;
     }
 }
