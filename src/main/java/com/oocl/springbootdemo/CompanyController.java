@@ -9,20 +9,20 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/companys")
+@RequestMapping("/companies")
 public class CompanyController {
-    private List<Company> companys = new ArrayList<>();
+    private final List<Company> companies = new ArrayList<>();
 
     @PostMapping("")
-    public ResponseEntity<Map<String, Long>> createcompanys(@RequestBody Company company) {
-        company.setId(companys.size() + 1);
-        companys.add(company);
+    public ResponseEntity<Map<String, Long>> createCompanies(@RequestBody Company company) {
+        company.setId(companies.size() + 1);
+        companies.add(company);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", company.getId()));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Company> updateCompanys(@RequestBody Company updateCompany, @PathVariable long id) {
-        Company target = companys.stream()
+    public ResponseEntity<Company> updateCompanies(@RequestBody Company updateCompany, @PathVariable long id) {
+        Company target = companies.stream()
                 .filter(company -> company.getId()==id)
                 .findFirst()
                 .orElse(null);
@@ -35,45 +35,24 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Company> getCompany(@PathVariable long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(companys.stream().filter(company -> company.getId()==id).findFirst().orElse(null));
+    public ResponseEntity<Company> getCompanies(@PathVariable long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(companies.stream().filter(company -> company.getId()==id).findFirst().orElse(null));
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Company>> queryCompanys(
+    public ResponseEntity<List<Company>> queryCompanies(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size
     ) {
         if (page != null && size != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(companys.subList(page*size, page*size+size));
+            return ResponseEntity.status(HttpStatus.OK).body(companies.subList(page*size, page*size+size));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(companys);
+        return ResponseEntity.status(HttpStatus.OK).body(companies);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Long>> deleteCompanys(@PathVariable long id) {
-        companys.remove(companys.stream().filter(company -> company.getId()==id).findFirst().orElse(null));
+    public ResponseEntity<Map<String, Long>> deleteCompanies(@PathVariable long id) {
+        companies.remove(companies.stream().filter(company -> company.getId()==id).findFirst().orElse(null));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-    }
-
-    static class Company {
-        private long id;
-        private String name;
-
-        public long getId() {
-            return id;
-        }
-
-        public void setId(long id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
     }
 }
