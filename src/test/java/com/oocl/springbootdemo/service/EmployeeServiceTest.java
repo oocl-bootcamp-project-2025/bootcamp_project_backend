@@ -1,6 +1,7 @@
 package com.oocl.springbootdemo.service;
 
 import com.oocl.springbootdemo.EmployeeNotAmoungLegalAgeException;
+import com.oocl.springbootdemo.EmployeeNotFoundException;
 import com.oocl.springbootdemo.EmployeeNotHavingAcceptablePaidException;
 import com.oocl.springbootdemo.object.Employee;
 import com.oocl.springbootdemo.repository.EmployeeRepository;
@@ -57,8 +58,8 @@ class EmployeeServiceTest {
         employee.setGender("Male");
         employee.setSalary(300000.0);
 
-        assertThrows(EmployeeNotAmoungLegalAgeException.class, () ->
-                employeeService.create(employee)
+        assertThrows(EmployeeNotAmoungLegalAgeException.class,
+                () -> employeeService.create(employee)
         );
     }
 
@@ -70,8 +71,8 @@ class EmployeeServiceTest {
         employee.setGender("Male");
         employee.setSalary(300.0);
 
-        assertThrows(EmployeeNotHavingAcceptablePaidException.class, () ->
-                employeeService.create(employee)
+        assertThrows(EmployeeNotHavingAcceptablePaidException.class,
+                () -> employeeService.create(employee)
         );
     }
 
@@ -94,10 +95,10 @@ class EmployeeServiceTest {
     @Test
     void should_return_employee_when_get_given_not_exist_employee_id() {
         when(employeeRepository.findById(10)).thenReturn(null);
-        Employee foundEmployee = employeeService.get(10);
 
-        assertNull(foundEmployee);
-        verify(employeeRepository, times(1)).findById(10);
+        assertThrows(EmployeeNotFoundException.class,
+                () -> employeeService.get(10)
+        );
     }
 
 
