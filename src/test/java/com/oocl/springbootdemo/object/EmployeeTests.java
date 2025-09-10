@@ -70,9 +70,9 @@ class EmployeeTests {
 
     @Test
     void should_get_male_employees_when_get_given_filter_male() throws Exception {
-        String requestBodyMale = """
+        String requestBodyMale1 = """
                 {
-                    "name": "John Smith",
+                    "name": "John Smith1",
                     "age": 30,
                     "gender": "Male",
                     "salary": 60000
@@ -88,9 +88,18 @@ class EmployeeTests {
                 }
                 """;
 
+        String requestBodyMale2 = """
+                {
+                    "name": "John Smith2",
+                    "age": 30,
+                    "gender": "Male",
+                    "salary": 60000
+                }
+                """;
+
         mockMvc.perform(post("/employees")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBodyMale));
+                        .content(requestBodyMale1));
 
         mockMvc.perform(post("/employees")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -98,7 +107,7 @@ class EmployeeTests {
 
         mockMvc.perform(post("/employees")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBodyMale));
+                .content(requestBodyMale2));
 
         mockMvc.perform(get("/employees?gender=Male"))
                 .andExpect(status().isOk())
@@ -107,9 +116,18 @@ class EmployeeTests {
 
     @Test
     void should_get_employees_when_get_given_null() throws Exception {
-        String requestBodyMale = """
+        String requestBodyMale1 = """
                 {
-                    "name": "John Smith",
+                    "name": "John Smith1",
+                    "age": 30,
+                    "gender": "Male",
+                    "salary": 60000
+                }
+                """;
+
+        String requestBodyMale2 = """
+                {
+                    "name": "John Smith2",
                     "age": 30,
                     "gender": "Male",
                     "salary": 60000
@@ -127,7 +145,7 @@ class EmployeeTests {
 
         mockMvc.perform(post("/employees")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBodyMale));
+                .content(requestBodyMale1));
 
         mockMvc.perform(post("/employees")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -135,7 +153,7 @@ class EmployeeTests {
 
         mockMvc.perform(post("/employees")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBodyMale));
+                .content(requestBodyMale2));
 
         mockMvc.perform(get("/employees"))
                 .andExpect(status().isOk())
@@ -201,26 +219,49 @@ class EmployeeTests {
 
     @Test
     void should_get_employees_when_get_given_page_and_size() throws Exception {
-        String requestBody = """
+        String requestBody1 = """
                 {
-                    "name": "John Smith",
+                    "name": "John Smith1",
                     "age": 30,
                     "gender": "Male",
                     "salary": 60000
                 }
                 """;
-        for (int i=0; i<10; i++) {
-            mockMvc.perform(post("/employees")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(requestBody));
-        }
 
-        mockMvc.perform(get("/employees?page=1&size=2")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+        mockMvc.perform(post("/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody1));
+
+        String requestBody2 = """
+                {
+                    "name": "John Smith2",
+                    "age": 30,
+                    "gender": "Male",
+                    "salary": 60000
+                }
+                """;
+
+        mockMvc.perform(post("/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody2));
+
+        String requestBody3 = """
+                {
+                    "name": "John Smith3",
+                    "age": 30,
+                    "gender": "Male",
+                    "salary": 60000
+                }
+                """;
+
+        mockMvc.perform(post("/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody3));
+
+        mockMvc.perform(get("/employees?page=0&size=2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(3))
-                .andExpect(jsonPath("$[1].id").value(4))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$.length()").value(2));
     }
 

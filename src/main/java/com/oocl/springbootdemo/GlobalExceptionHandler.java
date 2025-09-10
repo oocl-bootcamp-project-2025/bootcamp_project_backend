@@ -32,4 +32,10 @@ public class GlobalExceptionHandler {
     public String handleEmployeeNotHavingAcceptablePaidException(Exception e) {
         return e.getMessage();
     }
+
+    @ExceptionHandler(EmployeeNameAndGenderDuplicatedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleEmployeeNameAndGenderDuplicatedException(Exception e) {
+        return e.getMessage();
+    }
 }

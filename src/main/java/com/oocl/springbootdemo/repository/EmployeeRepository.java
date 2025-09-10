@@ -52,4 +52,11 @@ public class EmployeeRepository {
         target.setActiveStatus(false);
         return target;
     }
+
+    public boolean hasDuplicatedNameAndGender(Employee target) {
+        return !employees.stream()
+                .filter(employee -> employee.getName().equals(target.getName()) && employee.getGender().equals(target.getGender()))
+                .toList()
+                .isEmpty();
+    }
 }

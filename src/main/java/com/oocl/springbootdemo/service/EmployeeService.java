@@ -1,9 +1,6 @@
 package com.oocl.springbootdemo.service;
 
-import com.oocl.springbootdemo.EmployeeNotActiveException;
-import com.oocl.springbootdemo.EmployeeNotAmongLegalAgeException;
-import com.oocl.springbootdemo.EmployeeNotFoundException;
-import com.oocl.springbootdemo.EmployeeNotHavingAcceptablePaidException;
+import com.oocl.springbootdemo.*;
 import com.oocl.springbootdemo.object.Employee;
 import com.oocl.springbootdemo.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +20,9 @@ public class EmployeeService {
         }
         if (employee.getAge() >= 30 && employee.getSalary() < 20000) {
             throw new EmployeeNotHavingAcceptablePaidException();
+        }
+        if (employeeRepository.hasDuplicatedNameAndGender(employee)) {
+            throw new EmployeeNameAndGenderDuplicatedException();
         }
         return employeeRepository.save(employee);
     }
