@@ -1,7 +1,7 @@
 package com.oocl.springbootdemo.service;
 
 import com.oocl.springbootdemo.EmployeeNotActiveException;
-import com.oocl.springbootdemo.EmployeeNotAmoungLegalAgeException;
+import com.oocl.springbootdemo.EmployeeNotAmongLegalAgeException;
 import com.oocl.springbootdemo.EmployeeNotFoundException;
 import com.oocl.springbootdemo.EmployeeNotHavingAcceptablePaidException;
 import com.oocl.springbootdemo.object.Employee;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class EmployeeService {
@@ -20,7 +19,7 @@ public class EmployeeService {
 
     public Employee create(Employee employee) {
         if (employee.getAge() < 18 || employee.getAge() > 65) {
-            throw new EmployeeNotAmoungLegalAgeException();
+            throw new EmployeeNotAmongLegalAgeException();
         }
         if (employee.getAge() >= 30 && employee.getSalary() < 20000) {
             throw new EmployeeNotHavingAcceptablePaidException();
