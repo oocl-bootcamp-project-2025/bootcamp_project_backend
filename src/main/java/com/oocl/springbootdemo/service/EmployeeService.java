@@ -45,7 +45,8 @@ public class EmployeeService {
         return employeeRepository.query(gender, page, size);
     }
 
-    public void delete(long id) {
-        employeeRepository.delete(id);
+    public Employee delete(long id) {
+        Employee foundEmployee = get(id);
+        return employeeRepository.delete(foundEmployee);
     }
 }

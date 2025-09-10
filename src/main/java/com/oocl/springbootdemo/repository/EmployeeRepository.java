@@ -47,7 +47,8 @@ public class EmployeeRepository {
         return employees;
     }
 
-    public void delete(long id) {
-        employees.remove(employees.stream().filter(employee -> employee.getId()==id).findFirst().orElse(null));
+    public Employee delete(Employee target) {
+        target.setActiveStatus(false);
+        return target;
     }
 }
