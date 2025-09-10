@@ -11,6 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -101,5 +103,18 @@ class EmployeeServiceTest {
         );
     }
 
+    @Test
+    void should_return_employee_list_when_get_given_gender() {
+        Employee employee = new Employee();
+        employee.setName("tom");
+        employee.setAge(18);
+        employee.setGender("Male");
+        employee.setSalary(3000.0);
 
+        when(employeeRepository.query("Male", null, null)).thenReturn(List.of(new Employee(), new Employee()));
+        List<Employee> result = employeeService.query("Male", null, null);
+
+        assertEquals(2, result.size());
+        verify(employeeRepository, times(1)).query("Male", null, null);
+    }
 }
