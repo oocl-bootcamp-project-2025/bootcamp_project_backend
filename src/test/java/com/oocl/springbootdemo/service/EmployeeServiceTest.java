@@ -30,6 +30,9 @@ class EmployeeServiceTest {
         employee.setGender("Male");
         employee.setSalary(3000.0);
 
+        when(employeeRepository.save(employee)).thenCallRealMethod();
+        Employee createdEmployee = employeeService.create(employee);
+
         verify(employeeRepository, times(1)).save(employee);
     }
 
@@ -82,8 +85,8 @@ class EmployeeServiceTest {
         employee.setSalary(300000.0);
 
         when(employeeRepository.findById(1)).thenReturn(employee);
-
         Employee foundEmployee = employeeService.get(1);
+
         assertEquals(employee, foundEmployee);
         verify(employeeRepository, times(1)).findById(1);
     }
@@ -91,8 +94,8 @@ class EmployeeServiceTest {
     @Test
     void should_return_employee_when_get_given_not_exist_employee_id() {
         when(employeeRepository.findById(10)).thenReturn(null);
-
         Employee foundEmployee = employeeService.get(10);
+
         assertNull(foundEmployee);
         verify(employeeRepository, times(1)).findById(10);
     }
