@@ -1,9 +1,6 @@
 package com.oocl.springbootdemo.service;
 
-import com.oocl.springbootdemo.EmployeeNotActiveException;
-import com.oocl.springbootdemo.EmployeeNotAmongLegalAgeException;
-import com.oocl.springbootdemo.EmployeeNotFoundException;
-import com.oocl.springbootdemo.EmployeeNotHavingAcceptablePaidException;
+import com.oocl.springbootdemo.*;
 import com.oocl.springbootdemo.object.Employee;
 import com.oocl.springbootdemo.repository.EmployeeRepository;
 import org.junit.jupiter.api.Test;
@@ -75,6 +72,21 @@ class EmployeeServiceTest {
         employee.setSalary(300.0);
 
         assertThrows(EmployeeNotHavingAcceptablePaidException.class,
+                () -> employeeService.create(employee)
+        );
+    }
+
+    @Test
+    void should_not_create_when_post_given_duplicated_name_and_gender() {
+        Employee employee = new Employee();
+        employee.setName("tom");
+        employee.setAge(20);
+        employee.setGender("Male");
+        employee.setSalary(300.0);
+
+        when(employeeRepository.hasDuplicatedNameAndGender(employee)).thenReturn(true);
+
+        assertThrows(EmployeeNameAndGenderDuplicatedException.class,
                 () -> employeeService.create(employee)
         );
     }
