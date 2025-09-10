@@ -20,11 +20,11 @@ public class CompanyService {
     }
 
     public Company update(long id, Company updateCompany) {
-        Company target = companyRepository.findById(id);
-        if (target != null) {
-            return companyRepository.update(target, updateCompany);
+        Company foundcompany = get(id);
+        if (foundcompany != null) {
+            return companyRepository.update(foundcompany, updateCompany);
         }
-        return target;
+        return null;
     }
 
     public Company get(long id) {

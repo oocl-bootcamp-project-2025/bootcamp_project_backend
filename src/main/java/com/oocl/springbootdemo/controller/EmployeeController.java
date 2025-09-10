@@ -1,5 +1,6 @@
 package com.oocl.springbootdemo.controller;
 
+import com.oocl.springbootdemo.EmployeeNotAmoungLegalAgeException;
 import com.oocl.springbootdemo.object.Employee;
 import com.oocl.springbootdemo.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +20,20 @@ public class EmployeeController {
 
     @PostMapping("")
     public ResponseEntity<Map<String, Long>> createEmployees(@RequestBody Employee employee) {
-        Map<String, Long> result = employeeService.create(employee);
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Employee> updateEmployees(@PathVariable long id, @RequestBody Employee updateEmployee) {
-        Employee result = employeeService.update(id, updateEmployee);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(result);
+        try {
+            Map<String, Long> result = employeeService.create(employee);
+            return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        } catch (EmployeeNotAmoungLegalAgeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getEmployee(@PathVariable long id) {
+    public ResponseEntity<Employee> getEmployee(@PathVariable long id)  {
         Employee result = employeeService.get(id);
+        if (result == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
@@ -45,8 +47,17 @@ public class EmployeeController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Employee> updateEmployee(@PathVariable long id, @RequestBody Employee updateEmployee) {
+        Employee result = employeeService.update(id, updateEmployee);
+        if (result == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(result);
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Long>> deleteEmployees(@PathVariable long id) {
+    public ResponseEntity<Void> deleteEmployees(@PathVariable long id) {
         employeeService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
