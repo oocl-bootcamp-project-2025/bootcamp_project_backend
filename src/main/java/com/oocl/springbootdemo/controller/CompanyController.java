@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/companies")
@@ -18,41 +17,31 @@ public class CompanyController {
     private CompanyService companyService;
 
     @PostMapping("")
-    public ResponseEntity<Map<String, Long>> createCompanies(@RequestBody Company company) {
-        Map<String, Long> result = companyService.create(company);
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Company> updateCompanies(@PathVariable long id, @RequestBody Company updateCompany) {
-        Company result = companyService.update(id, updateCompany);
-        if (result == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(result);
+    public ResponseEntity<Company> createCompanies(@RequestBody Company company) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(companyService.create(company));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Company> getCompany(@PathVariable long id)  {
-        Company result = companyService.get(id);
-        if (result == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        return ResponseEntity.status(HttpStatus.OK).body(companyService.get(id));
     }
 
     @GetMapping("")
     public ResponseEntity<List<Company>> queryCompanies(
+            @RequestParam(required = false) String gender,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size
     ) {
-        List<Company> result = companyService.query(page, size);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        return ResponseEntity.status(HttpStatus.OK).body(companyService.query(page, size));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Company> updateCompanies(@PathVariable long id, @RequestBody Company updateCompany) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(companyService.update(id, updateCompany));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCompanies(@PathVariable long id) {
-        companyService.delete(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    public ResponseEntity<Company> deleteCompanies(@PathVariable long id) {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(companyService.delete(id));
     }
 }
