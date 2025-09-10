@@ -1,6 +1,6 @@
 package com.oocl.springbootdemo.service;
 
-import com.oocl.springbootdemo.EmployeeNotAmoungLegalAgeException;
+import com.oocl.springbootdemo.EmployeeNotAmongLegalAgeException;
 import com.oocl.springbootdemo.EmployeeNotFoundException;
 import com.oocl.springbootdemo.EmployeeNotHavingAcceptablePaidException;
 import com.oocl.springbootdemo.object.Employee;
@@ -47,7 +47,7 @@ class EmployeeServiceTest {
         employee.setGender("Male");
         employee.setSalary(3000.0);
 
-        assertThrows(EmployeeNotAmoungLegalAgeException.class,
+        assertThrows(EmployeeNotAmongLegalAgeException.class,
                 () -> employeeService.create(employee)
         );
     }
@@ -60,7 +60,7 @@ class EmployeeServiceTest {
         employee.setGender("Male");
         employee.setSalary(300000.0);
 
-        assertThrows(EmployeeNotAmoungLegalAgeException.class,
+        assertThrows(EmployeeNotAmongLegalAgeException.class,
                 () -> employeeService.create(employee)
         );
     }
@@ -119,6 +119,32 @@ class EmployeeServiceTest {
 
         assertEquals(2, result.size());
         verify(employeeRepository, times(1)).query(null, 0, 2);
+    }
+
+    @Test
+    void should_update_employee_when_update_given_activeStatus_is_true() {
+        Employee employee = new Employee();
+        employee.setId(1);
+        employee.setName("tom");
+        employee.setAge(20);
+        employee.setGender("Male");
+        employee.setSalary(300000.0);
+        employee.setActiveStatus(true);
+
+        Employee updateEmployee = new Employee();
+        updateEmployee.setId(1);
+        updateEmployee.setName("tom updated");
+        updateEmployee.setAge(20);
+        updateEmployee.setGender("Male");
+        updateEmployee.setSalary(300000.0);
+        updateEmployee.setActiveStatus(true);
+
+        when(employeeRepository.update(employee, updateEmployee)).thenReturn(updateEmployee);
+        when(employeeRepository.findById(1)).thenReturn(employee);
+
+        Employee result = employeeService.update(1, updateEmployee);
+        assertEquals("tom updated", result.getName());
+        verify(employeeRepository, times(1)).update(any(), any());
     }
 
 
