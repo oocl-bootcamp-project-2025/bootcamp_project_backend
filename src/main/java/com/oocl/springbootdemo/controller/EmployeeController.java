@@ -32,8 +32,7 @@ public class EmployeeController {
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size
     ) {
-        List<Employee> result = employeeService.query(gender, page, size);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        return ResponseEntity.status(HttpStatus.OK).body(employeeService.query(gender, page, size));
     }
 
     @PutMapping("/{id}")
