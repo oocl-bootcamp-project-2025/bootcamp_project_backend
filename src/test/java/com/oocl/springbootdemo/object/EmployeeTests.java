@@ -196,9 +196,7 @@ class EmployeeTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1));
 
-        mockMvc.perform(delete("/employees/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+        mockMvc.perform(delete("/employees/1"))
                 .andExpect(jsonPath("$.activeStatus").value(false))
                 .andExpect(status().isNoContent());
     }
@@ -308,6 +306,38 @@ class EmployeeTests {
         mockMvc.perform(post("/employees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void should_not_update_employee_when_put_given_activeStatus_is_false() throws Exception {
+        String requestBody = """
+                        {
+                            "name": "John Smith",
+                            "age": 30,
+                            "gender": "Male",
+                            "salary": 60000
+                        }
+                """;
+
+        mockMvc.perform(post("/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+
+        mockMvc.perform(delete("/employees/1"));
+
+        String updatedRequestBody = """
+                        {
+                            "name": "John Smith Updated",
+                            "age": 300,
+                            "gender": "Female",
+                            "salary": 80000
+                        }
+                """;
+
+        mockMvc.perform(put("/employees/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updatedRequestBody))
                 .andExpect(status().isBadRequest());
     }
 }
