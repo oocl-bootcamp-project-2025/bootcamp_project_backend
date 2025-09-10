@@ -1,5 +1,6 @@
 package com.oocl.springbootdemo;
 
+import com.oocl.springbootdemo.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +17,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class EmployeeTests {
     @Autowired
     private MockMvc mockMvc;
 
     @BeforeEach
     void resetId() {
-        EmployeeController.setId(0);
+        EmployeeService.clear();
     }
 
     @Test

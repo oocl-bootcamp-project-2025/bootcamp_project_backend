@@ -1,5 +1,6 @@
 package com.oocl.springbootdemo;
 
+import com.oocl.springbootdemo.service.CompanyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ class CompanyTests {
 
     @BeforeEach
     void resetId() {
-        CompanyController.setId(0);
+        CompanyService.clear();
     }
 
     @Test
