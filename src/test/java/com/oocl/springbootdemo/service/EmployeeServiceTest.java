@@ -1,5 +1,6 @@
 package com.oocl.springbootdemo.service;
 
+import com.oocl.springbootdemo.EmployeeNotActiveException;
 import com.oocl.springbootdemo.EmployeeNotAmongLegalAgeException;
 import com.oocl.springbootdemo.EmployeeNotFoundException;
 import com.oocl.springbootdemo.EmployeeNotHavingAcceptablePaidException;
@@ -147,5 +148,30 @@ class EmployeeServiceTest {
         verify(employeeRepository, times(1)).update(any(), any());
     }
 
+    @Test
+    void should_update_employee_when_update_given_activeStatus_is_false() {
+        Employee employee = new Employee();
+        employee.setId(1);
+        employee.setName("tom");
+        employee.setAge(20);
+        employee.setGender("Male");
+        employee.setSalary(300000.0);
+        employee.setActiveStatus(false);
 
+        Employee updateEmployee = new Employee();
+        updateEmployee.setId(1);
+        updateEmployee.setName("tom updated");
+        updateEmployee.setAge(20);
+        updateEmployee.setGender("Male");
+        updateEmployee.setSalary(300000.0);
+        updateEmployee.setActiveStatus(true);
+
+        when(employeeRepository.update(employee, updateEmployee)).thenReturn(updateEmployee);
+        when(employeeRepository.findById(1)).thenReturn(employee);
+
+        assertThrows(EmployeeNotActiveException.class,
+                () -> employeeService.update(1, updateEmployee)
+        );
+        verify(employeeRepository, never()).update(any(), any());
+    }
 }
