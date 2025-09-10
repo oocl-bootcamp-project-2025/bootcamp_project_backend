@@ -23,6 +23,17 @@ class EmployeeServiceTest {
     private EmployeeService employeeService;
 
     @Test
+    void should_create_when_post_given_a_valid_body() {
+        Employee employee = new Employee();
+        employee.setName("tom");
+        employee.setAge(18);
+        employee.setGender("Male");
+        employee.setSalary(3000.0);
+
+        verify(employeeRepository, times(1)).save(employee);
+    }
+
+    @Test
     void should_not_create_when_post_given_age_below_18() {
         Employee employee = new Employee();
         employee.setName("tom");
