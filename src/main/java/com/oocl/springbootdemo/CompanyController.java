@@ -12,10 +12,15 @@ import java.util.Map;
 @RequestMapping("/companies")
 public class CompanyController {
     private final List<Company> companies = new ArrayList<>();
+    private static long id = 0;
+
+    public static void setId(long id) {
+        CompanyController.id = id;
+    }
 
     @PostMapping("")
     public ResponseEntity<Map<String, Long>> createCompanies(@RequestBody Company company) {
-        company.setId(companies.size() + 1);
+        company.setId(++id);
         companies.add(company);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", company.getId()));
     }

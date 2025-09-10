@@ -10,10 +10,15 @@ import java.util.*;
 @RequestMapping("/employees")
 public class EmployeeController {
     private final List<Employee> employees = new ArrayList<>();
+    private static long id = 0;
+
+    public static void setId(long id) {
+        EmployeeController.id = id;
+    }
 
     @PostMapping("")
     public ResponseEntity<Map<String, Long>> createEmployees(@RequestBody Employee employee) {
-        employee.setId(employees.size() + 1); //variable
+        employee.setId(++id); //variable
         employees.add(employee);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", employee.getId()));
     }

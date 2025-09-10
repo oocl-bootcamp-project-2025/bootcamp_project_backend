@@ -1,5 +1,6 @@
 package com.oocl.springbootdemo;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,6 +20,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class EmployeeTests {
     @Autowired
     private MockMvc mockMvc;
+
+    @BeforeEach
+    void resetId() {
+        EmployeeController.setId(0);
+    }
 
     @Test
     void should_create_employee_when_post_given_a_valid_body() throws Exception {
