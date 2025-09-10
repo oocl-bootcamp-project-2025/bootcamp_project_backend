@@ -1,4 +1,4 @@
-package com.oocl.springbootdemo;
+package com.oocl.springbootdemo.exception;
 
 public class EmployeeNotHavingAcceptablePaidException extends RuntimeException {
 }
