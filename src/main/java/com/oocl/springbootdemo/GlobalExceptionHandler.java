@@ -1,6 +1,7 @@
 package com.oocl.springbootdemo;
 
 
+import com.oocl.springbootdemo.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -12,6 +13,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EmployeeNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleEmployeeNotFoundException(Exception e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(CompanyNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleCompanyNotFoundException(Exception e) {
         return e.getMessage();
     }
 
