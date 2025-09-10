@@ -105,16 +105,21 @@ class EmployeeServiceTest {
 
     @Test
     void should_return_employee_list_when_get_given_gender() {
-        Employee employee = new Employee();
-        employee.setName("tom");
-        employee.setAge(18);
-        employee.setGender("Male");
-        employee.setSalary(3000.0);
-
         when(employeeRepository.query("Male", null, null)).thenReturn(List.of(new Employee(), new Employee()));
         List<Employee> result = employeeService.query("Male", null, null);
 
         assertEquals(2, result.size());
         verify(employeeRepository, times(1)).query("Male", null, null);
     }
+
+    @Test
+    void should_return_employee_list_when_get_given_page_and_size() {
+        when(employeeRepository.query(null, 0, 2)).thenReturn(List.of(new Employee(), new Employee()));
+        List<Employee> result = employeeService.query(null, 0, 2);
+
+        assertEquals(2, result.size());
+        verify(employeeRepository, times(1)).query(null, 0, 2);
+    }
+
+
 }
