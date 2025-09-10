@@ -16,10 +16,11 @@ public class EmployeeRepository {
         id = 0;
     }
 
-    public void save(Employee employee) {
+    public Employee save(Employee employee) {
         employee.setId(++id);
         employee.setActiveStatus(true);
         employees.add(employee);
+        return employee;
     }
 
     public Employee findById(long id) {

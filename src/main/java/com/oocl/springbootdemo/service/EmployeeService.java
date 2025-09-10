@@ -24,13 +24,7 @@ public class EmployeeService {
         if (employee.getAge() >= 30 && employee.getSalary() < 20000) {
             throw new EmployeeNotHavingAcceptablePaidException();
         }
-        employeeRepository.save(employee);
-        return employee;
-    }
-
-    public Employee update(long id, Employee updateEmployee) {
-        Employee foundEmployee = get(id);
-        return employeeRepository.update(foundEmployee, updateEmployee);
+        return employeeRepository.save(employee);
     }
 
     public Employee get(long id) {
@@ -43,6 +37,11 @@ public class EmployeeService {
 
     public List<Employee> query(String gender, Integer page, Integer size) {
         return employeeRepository.query(gender, page, size);
+    }
+
+    public Employee update(long id, Employee updateEmployee) {
+        Employee foundEmployee = get(id);
+        return employeeRepository.update(foundEmployee, updateEmployee);
     }
 
     public Employee delete(long id) {
