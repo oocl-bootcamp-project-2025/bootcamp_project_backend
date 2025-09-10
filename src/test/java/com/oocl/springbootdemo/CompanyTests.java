@@ -1,6 +1,6 @@
 package com.oocl.springbootdemo;
 
-import com.oocl.springbootdemo.service.CompanyService;
+import com.oocl.springbootdemo.repository.CompanyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ class CompanyTests {
 
     @BeforeEach
     void resetId() {
-        CompanyService.clear();
+        CompanyRepository.clear();
     }
 
     @Test
@@ -61,7 +61,7 @@ class CompanyTests {
     }
 
     @Test
-    void should_get_companys_when_get_given_null() throws Exception {
+    void should_get_companies_when_get_given_null() throws Exception {
         String requestBody = """
                 {
                     "name": "John Smith"
@@ -128,7 +128,7 @@ class CompanyTests {
     }
 
     @Test
-    void should_get_companys_when_get_given_page_and_size() throws Exception {
+    void should_get_companies_when_get_given_page_and_size() throws Exception {
         String requestBody = """
                 {
                     "name": "John Smith"

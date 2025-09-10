@@ -1,53 +1,41 @@
 package com.oocl.springbootdemo.service;
 
-import com.oocl.springbootdemo.Company;
+import com.oocl.springbootdemo.object.Company;
+import com.oocl.springbootdemo.repository.CompanyRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class CompanyService {
-    private final static List<Company> companies = new ArrayList<>();
-    private static long id = 0;
 
-    public static void clear() {
-        companies.clear();
-        id = 0;
-    }
+    @Autowired
+    private CompanyRepository companyRepository;
 
     public Map<String, Long> create(Company company) {
-        company.setId(++id); //variable
-        companies.add(company);
+        companyRepository.save(company);
         return Map.of("id", company.getId());
     }
 
     public Company update(long id, Company updateCompany) {
-        Company target = companies.stream()
-                .filter(company -> company.getId()==id)
-                .findFirst()
-                .orElse(null);
-
+        Company target = companyRepository.findById(id);
         if (target != null) {
-            target.setName(updateCompany.getName());
+            return companyRepository.update(target, updateCompany);
         }
-
         return target;
     }
 
     public Company get(long id) {
-        return companies.stream().filter(company -> company.getId()==id).findFirst().orElse(null);
+        return companyRepository.findById(id);
     }
 
     public List<Company> query(Integer page, Integer size) {
-        if (page != null && size != null) {
-            return companies.subList(page*size, page*size+size);
-        }
-        return companies;
+        return companyRepository.query(page, size);
     }
 
     public void delete(long id) {
-        companies.remove(companies.stream().filter(company -> company.getId()==id).findFirst().orElse(null));
+        companyRepository.delete(id);
     }
 }

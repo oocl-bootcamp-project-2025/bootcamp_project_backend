@@ -1,4 +1,4 @@
-package com.oocl.springbootdemo;
+package com.oocl.springbootdemo.object;
 
 public class Company {
     private long id;
