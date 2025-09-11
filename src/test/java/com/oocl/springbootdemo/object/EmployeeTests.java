@@ -1,6 +1,7 @@
 package com.oocl.springbootdemo.object;
 
 import com.oocl.springbootdemo.repository.EmployeeRepository;
+import com.oocl.springbootdemo.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,12 @@ class EmployeeTests {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private EmployeeService employeeService;
+
     @BeforeEach
-    void resetId() {
-        EmployeeRepository.clear();
+    void reset() {
+        employeeService.clear();
     }
 
     @Test

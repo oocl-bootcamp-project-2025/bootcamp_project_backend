@@ -51,4 +51,8 @@ public class EmployeeService {
         Employee foundEmployee = get(id);
         return employeeRepository.delete(foundEmployee);
     }
+
+    public void clear() {
+        employeeRepository.clearAll();
+    }
 }
