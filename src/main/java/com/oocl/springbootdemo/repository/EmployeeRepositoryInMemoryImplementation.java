@@ -43,7 +43,7 @@ public class EmployeeRepositoryInMemoryImplementation implements EmployeeReposit
             return employees.stream().filter(employee -> employee.getGender().equals(gender)).toList();
         }
         if (page != null && size != null) {
-            return employees.subList((page - 1) * size, (page - 1) * size + size);
+            return employees.subList((page-1)*size, Math.min((page-1)*size+size, employees.size()));
         }
         return employees;
     }

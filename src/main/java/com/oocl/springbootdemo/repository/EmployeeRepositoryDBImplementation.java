@@ -1,59 +1,55 @@
-package com.oocl.springbootdemo.repository;
-
-import com.oocl.springbootdemo.object.Employee;
-import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class EmployeeRepositoryDBImplementation {
-    private final static List<Employee> employees = new ArrayList<>();
-    private static long id = 0;
-
-    public static void clear() {
-        employees.clear();
-        id = 0;
-    }
-
-    public Employee save(Employee employee) {
-        employee.setId(++id);
-        employee.setActiveStatus(true);
-        employees.add(employee);
-        return employee;
-    }
-
-    public Employee findById(long id) {
-        return employees.stream()
-                .filter(employee -> employee.getId() == id)
-                .findFirst()
-                .orElse(null);
-    }
-
-    public Employee update(Employee target, Employee updateEmployee) {
-        target.setName(updateEmployee.getName());
-        target.setAge(updateEmployee.getAge());
-        target.setGender(updateEmployee.getGender());
-        target.setSalary(updateEmployee.getSalary());
-        return target;
-    }
-
-    public List<Employee> query(String gender, Integer page, Integer size) {
-        if (gender != null) {
-            return employees.stream().filter(employee -> employee.getGender().equals(gender)).toList();
-        }
-        if (page != null && size != null) {
-            return employees.subList((page - 1) * size, (page - 1) * size + size);
-        }
-        return employees;
-    }
-
-    public Employee delete(Employee target) {
-        target.setActiveStatus(false);
-        return target;
-    }
-
-    public boolean hasDuplicatedNameAndGender(Employee target) {
-        return employees.stream()
-                .anyMatch(employee -> employee.getName().equals(target.getName()) && employee.getGender().equals(target.getGender()));
-    }
-}
+//package com.oocl.springbootdemo.repository;
+//
+//import com.oocl.springbootdemo.object.Employee;
+//import com.oocl.springbootdemo.repository.dao.EmployeeJpaRepository;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.data.domain.PageRequest;
+//import org.springframework.stereotype.Repository;
+//
+//import java.util.List;
+//
+//@Repository
+//public class EmployeeRepositoryDBImplementation implements EmployeeRepository{
+//
+//    @Autowired
+//    private EmployeeJpaRepository employeeJpaRepository;
+//
+//    public void clearAll() {
+//        employeeJpaRepository.deleteAll();
+//    }
+//
+//    public Employee save(Employee employee) {
+//        employee.setActiveStatus(true);
+//        return employeeJpaRepository.save(employee);
+//    }
+//
+//    public Employee findById(long id) {
+//        return employeeJpaRepository.findById(id).orElse(null);
+//    }
+//
+//    public Employee update(Employee target, Employee updateEmployee) {
+//        updateEmployee.setId(target.getId());
+//        return employeeJpaRepository.save(updateEmployee);
+//    }
+//
+//    public List<Employee> query(String gender, Integer page, Integer size) {
+//        if (gender != null) {
+//            return employeeJpaRepository.findAllByGender(gender);
+//        }
+//        if (page != null && size != null) {
+//            return employeeJpaRepository.findAll(PageRequest.of(page-1, size)).toList();
+//        }
+//        return employeeJpaRepository.findAll();
+//    }
+//
+//    public Employee delete(Employee target) {
+//        target.setActiveStatus(false);
+//        return employeeJpaRepository.save(target);
+//    }
+//
+//    public boolean hasDuplicatedNameAndGender(Employee target) {
+//        return employeeJpaRepository.findAll()
+//                .stream()
+//                .anyMatch(employee -> employee.getName().equals(target.getName()) && employee.getGender().equals(target.getGender()));
+//    }
+//}

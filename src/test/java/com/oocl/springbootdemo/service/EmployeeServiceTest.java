@@ -31,7 +31,7 @@ class EmployeeServiceTest {
         employee.setGender("Male");
         employee.setSalary(3000.0);
 
-        when(employeeRepository.save(employee)).thenCallRealMethod();
+        when(employeeRepository.save(employee)).thenReturn(employee);
         Employee createdEmployee = employeeService.create(employee);
 
         verify(employeeRepository, times(1)).save(employee);

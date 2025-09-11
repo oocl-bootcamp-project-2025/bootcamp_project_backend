@@ -1,6 +1,6 @@
-package com.oocl.springbootdemo.object;
+package com.oocl.springbootdemo.controller;
 
-import com.oocl.springbootdemo.repository.EmployeeRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oocl.springbootdemo.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +9,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -17,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class EmployeeTests {
+class EmployeeControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
@@ -29,9 +31,7 @@ class EmployeeTests {
         employeeService.clear();
     }
 
-    @Test
-    void should_create_employee_when_post_given_a_valid_body() throws Exception {
-        String requestBody = """
+    String requestBody = """
                 {
                     "name": "John Smith",
                     "age": 30,
@@ -40,32 +40,33 @@ class EmployeeTests {
                 }
                 """;
 
+    long createEmployeeReturnId(String requestBody) throws Exception {
+        ResultActions resultActions = mockMvc.perform(post("/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+        MvcResult mvcResult = resultActions.andReturn();
+        String contentAsString =mvcResult.getResponse().getContentAsString();
+        return new ObjectMapper().readTree(contentAsString).get("id").asLong();
+    }
+
+    @Test
+    void should_create_employee_when_post_given_a_valid_body() throws Exception {
         mockMvc.perform(post("/employees")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("John Smith"))
+                .andExpect(jsonPath("$.gender").value("Male"))
                 .andExpect(jsonPath("$.activeStatus").value(true));
     }
 
     @Test
     void should_get_employee_when_get_given_a_valid_id() throws Exception {
-        String requestBody = """
-                {
-                    "name": "John Smith",
-                    "age": 30,
-                    "gender": "Male",
-                    "salary": 60000
-                }
-                """;
+        long createdId = createEmployeeReturnId(requestBody);
 
-        mockMvc.perform(post("/employees")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody));
-
-        mockMvc.perform(get("/employees/1"))
+        mockMvc.perform(get("/employees/"+createdId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.id").value(createdId))
                 .andExpect(jsonPath("$.name").value("John Smith"))
                 .andExpect(jsonPath("$.age").value(30))
                 .andExpect(jsonPath("$.gender").value("Male"))
@@ -166,18 +167,7 @@ class EmployeeTests {
 
     @Test
     void should_update_employee_when_put_given_a_valid_body() throws Exception {
-        String requestBody = """
-                        {
-                            "name": "John Smith",
-                            "age": 30,
-                            "gender": "Male",
-                            "salary": 60000
-                        }
-                """;
-
-        mockMvc.perform(post("/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
+        long createdId = createEmployeeReturnId(requestBody);
 
         String updatedRequestBody = """
                         {
@@ -188,11 +178,11 @@ class EmployeeTests {
                         }
                 """;
 
-        mockMvc.perform(put("/employees/1")
+        mockMvc.perform(put("/employees/"+createdId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(updatedRequestBody))
                 .andExpect(status().isAccepted())
-                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.id").value(createdId))
                 .andExpect(jsonPath("$.name").value("John Smith Updated"))
                 .andExpect(jsonPath("$.age").value(300))
                 .andExpect(jsonPath("$.gender").value("Female"))
@@ -201,22 +191,9 @@ class EmployeeTests {
 
     @Test
     void should_update_activeStatus_when_delete_given_a_valid_id() throws Exception {
-        String requestBody = """
-                {
-                    "name": "John Smith",
-                    "age": 30,
-                    "gender": "Male",
-                    "salary": 60000
-                }
-                """;
+        long createdId = createEmployeeReturnId(requestBody);
 
-        mockMvc.perform(post("/employees")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1));
-
-        mockMvc.perform(delete("/employees/1"))
+        mockMvc.perform(delete("/employees/"+createdId))
                 .andExpect(jsonPath("$.activeStatus").value(false))
                 .andExpect(status().isNoContent());
     }
@@ -232,10 +209,6 @@ class EmployeeTests {
                 }
                 """;
 
-        mockMvc.perform(post("/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody1));
-
         String requestBody2 = """
                 {
                     "name": "John Smith2",
@@ -244,10 +217,6 @@ class EmployeeTests {
                     "salary": 60000
                 }
                 """;
-
-        mockMvc.perform(post("/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody2));
 
         String requestBody3 = """
                 {
@@ -258,28 +227,24 @@ class EmployeeTests {
                 }
                 """;
 
-        mockMvc.perform(post("/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody3));
+        long createdId1 = createEmployeeReturnId(requestBody1);
+        long createdId2 = createEmployeeReturnId(requestBody2);
+        long createdId3 = createEmployeeReturnId(requestBody3);
 
         mockMvc.perform(get("/employees?page=1&size=2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[0].id").value(createdId1))
+                .andExpect(jsonPath("$[1].id").value(createdId2))
                 .andExpect(jsonPath("$.length()").value(2));
+
+        mockMvc.perform(get("/employees?page=2&size=2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(createdId3))
+                .andExpect(jsonPath("$.length()").value(1));
     }
 
     @Test
     void should_get_null_when_get_given_a_invalid_id() throws Exception {
-        String requestBody = """
-                        {
-                            "name": "John Smith",
-                            "age": 30,
-                            "gender": "Male",
-                            "salary": 60000
-                        }
-                """;
-
         mockMvc.perform(post("/employees")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody));
@@ -290,15 +255,6 @@ class EmployeeTests {
 
     @Test
     void should_get_null_when_update_given_a_invalid_id() throws Exception {
-        String requestBody = """
-                        {
-                            "name": "John Smith",
-                            "age": 30,
-                            "gender": "Male",
-                            "salary": 60000
-                        }
-                """;
-
         mockMvc.perform(post("/employees")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody));
@@ -320,54 +276,43 @@ class EmployeeTests {
 
     @Test
     void should_not_create_when_post_given_age_below_18() throws Exception {
-        String requestBody = """
-                        {
-                            "name": "John Smith",
-                            "age": 17,
-                            "gender": "Male",
-                            "salary": 60000
-                        }
+        String requestBodyBelow18 = """
+                {
+                    "name": "John Smith",
+                    "age": 17,
+                    "gender": "Male",
+                    "salary": 60000
+                }
                 """;
 
         mockMvc.perform(post("/employees")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(requestBodyBelow18))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void should_not_create_when_post_given_age_over_65() throws Exception {
-        String requestBody = """
-                        {
-                            "name": "John Smith",
-                            "age": 66,
-                            "gender": "Male",
-                            "salary": 60000
-                        }
+        String requestBodyOver65 = """
+                {
+                    "name": "John Smith",
+                    "age": 66,
+                    "gender": "Male",
+                    "salary": 60000
+                }
                 """;
 
         mockMvc.perform(post("/employees")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(requestBodyOver65))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void should_not_update_employee_when_put_given_activeStatus_is_false() throws Exception {
-        String requestBody = """
-                        {
-                            "name": "John Smith",
-                            "age": 30,
-                            "gender": "Male",
-                            "salary": 60000
-                        }
-                """;
+        long createdId = createEmployeeReturnId(requestBody);
 
-        mockMvc.perform(post("/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
-
-        mockMvc.perform(delete("/employees/1"));
+        mockMvc.perform(delete("/employees/"+createdId));
 
         String updatedRequestBody = """
                         {
@@ -378,7 +323,7 @@ class EmployeeTests {
                         }
                 """;
 
-        mockMvc.perform(put("/employees/1")
+        mockMvc.perform(put("/employees/"+createdId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updatedRequestBody))
                 .andExpect(status().isBadRequest());
