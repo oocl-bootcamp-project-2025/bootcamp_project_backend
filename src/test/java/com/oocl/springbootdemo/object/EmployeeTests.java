@@ -258,7 +258,7 @@ class EmployeeTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody3));
 
-        mockMvc.perform(get("/employees?page=0&size=2"))
+        mockMvc.perform(get("/employees?page=1&size=2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[1].id").value(2))

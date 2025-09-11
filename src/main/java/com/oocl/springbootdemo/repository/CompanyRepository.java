@@ -36,7 +36,7 @@ public class CompanyRepository {
 
     public List<Company> query(Integer page, Integer size) {
         if (page != null && size != null) {
-            return companies.subList(page*size, page*size+size);
+            return companies.subList((page-1)*size, (page-1)*size+size);
         }
         return companies;
     }

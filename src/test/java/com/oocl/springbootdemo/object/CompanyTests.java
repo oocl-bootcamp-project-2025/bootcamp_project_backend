@@ -134,7 +134,7 @@ class CompanyTests {
                     .content(requestBody));
         }
 
-        mockMvc.perform(get("/companies?page=0&size=2"))
+        mockMvc.perform(get("/companies?page=1&size=2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[1].id").value(2))

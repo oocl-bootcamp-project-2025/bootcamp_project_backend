@@ -41,9 +41,9 @@ public class EmployeeRepository {
     public List<Employee> query(String gender, Integer page, Integer size) {
         if (gender != null) {
             return employees.stream().filter(employee -> employee.getGender().equals(gender)).toList();
-        };
+        }
         if (page != null && size != null) {
-            return employees.subList(page*size, page*size+size);
+            return employees.subList((page-1)*size, (page-1)*size+size);
         }
         return employees;
     }
