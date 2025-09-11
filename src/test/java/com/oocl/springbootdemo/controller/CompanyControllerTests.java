@@ -57,9 +57,7 @@ class CompanyControllerTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("John Smith"))
-                .andExpect(jsonPath("$.gender").value("Male"))
-                .andExpect(jsonPath("$.activeStatus").value(true));
+                .andExpect(jsonPath("$.name").value("OOCL"));
     }
 
     @Test
@@ -252,23 +250,4 @@ class CompanyControllerTests {
                         .content(updatedRequestBody))
                 .andExpect(status().isBadRequest());
     }
-
-//    @Test
-//    void should_return_company_when__given_companies() throws Exception {
-//        Company company = new Company();
-//        Company company = new Company();
-//        company.setSalary(80000);
-//        company.setCompanyId(company.getId());
-//        company.setGender("Male");
-//        company.getCompanys().add(company);
-//
-//        companyRepository.save(company);
-//
-//        mockMvc.perform(get("companies/{id}", company.getId())
-//                .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.companies[0]").value(company));
-//
-//
-//    }
 }

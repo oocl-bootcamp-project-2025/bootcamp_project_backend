@@ -29,7 +29,7 @@ class CompanyServiceTest {
         Company company = new Company();
         company.setName("tom");
 
-        when(companyRepository.save(company)).thenCallRealMethod();
+        when(companyRepository.save(company)).thenReturn(company);
         Company createdCompany = companyService.create(company);
 
         verify(companyRepository, times(1)).save(company);
