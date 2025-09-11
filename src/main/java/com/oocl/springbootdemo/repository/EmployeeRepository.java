@@ -25,7 +25,7 @@ public class EmployeeRepository {
 
     public Employee findById(long id) {
         return employees.stream()
-                .filter(employee -> employee.getId()==id)
+                .filter(employee -> employee.getId() == id)
                 .findFirst()
                 .orElse(null);
     }
@@ -43,7 +43,7 @@ public class EmployeeRepository {
             return employees.stream().filter(employee -> employee.getGender().equals(gender)).toList();
         }
         if (page != null && size != null) {
-            return employees.subList((page-1)*size, (page-1)*size+size);
+            return employees.subList((page - 1) * size, (page - 1) * size + size);
         }
         return employees;
     }

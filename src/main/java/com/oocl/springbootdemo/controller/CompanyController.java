@@ -22,7 +22,7 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Company> getCompany(@PathVariable long id)  {
+    public ResponseEntity<Company> getCompany(@PathVariable long id) {
         return ResponseEntity.status(HttpStatus.OK).body(companyService.get(id));
     }
 

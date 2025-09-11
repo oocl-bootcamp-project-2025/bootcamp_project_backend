@@ -22,7 +22,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getEmployee(@PathVariable long id)  {
+    public ResponseEntity<Employee> getEmployee(@PathVariable long id) {
         return ResponseEntity.status(HttpStatus.OK).body(employeeService.get(id));
     }
 

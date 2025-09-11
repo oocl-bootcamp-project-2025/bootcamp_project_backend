@@ -24,7 +24,7 @@ public class CompanyRepository {
 
     public Company findById(long id) {
         return companies.stream()
-                .filter(company -> company.getId()==id)
+                .filter(company -> company.getId() == id)
                 .findFirst()
                 .orElse(null);
     }
@@ -36,7 +36,7 @@ public class CompanyRepository {
 
     public List<Company> query(Integer page, Integer size) {
         if (page != null && size != null) {
-            return companies.subList((page-1)*size, (page-1)*size+size);
+            return companies.subList((page - 1) * size, (page - 1) * size + size);
         }
         return companies;
     }
