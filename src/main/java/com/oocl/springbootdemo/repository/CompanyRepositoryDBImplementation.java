@@ -1,6 +1,7 @@
 package com.oocl.springbootdemo.repository;
 
 import com.oocl.springbootdemo.object.Company;
+import com.oocl.springbootdemo.object.UpdateCompanyRequest;
 import com.oocl.springbootdemo.repository.dao.CompanyJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -26,9 +27,10 @@ public class CompanyRepositoryDBImplementation implements CompanyRepository{
         return companyJpaRepository.findById(id).orElse(null);
     }
 
-    public Company update(Company target, Company updateCompany) {
-        updateCompany.setId(target.getId());
-        return companyJpaRepository.save(updateCompany);
+    public Company update(Company company, UpdateCompanyRequest updateCompanyRequest) {
+        company.setName(updateCompanyRequest.getName());
+        company.setEmployees(updateCompanyRequest.getEmployees());
+        return companyJpaRepository.save(company);
     }
 
     public List<Company> query(Integer page, Integer size) {

@@ -1,10 +1,11 @@
 package com.oocl.springbootdemo.controller;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oocl.springbootdemo.object.Company;
-import com.oocl.springbootdemo.object.Company;
+import com.oocl.springbootdemo.object.Employee;
 import com.oocl.springbootdemo.repository.CompanyRepository;
-import com.oocl.springbootdemo.service.CompanyService;
+import com.oocl.springbootdemo.repository.EmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -27,59 +26,63 @@ class CompanyControllerTests {
     private MockMvc mockMvc;
 
     @Autowired
-    private CompanyService companyService;
-    @Autowired
     private CompanyRepository companyRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void reset() {
-        companyService.clear();
+        employeeRepository.clearAll();
+        companyRepository.clearAll();
     }
 
-    String requestBody = """
-                {
-                    "name": "OOCL"
-                }
-                """;
+    Company createCompany(String name) throws Exception {
+        Company company = new Company();
+        company.setName(name);
+        return company;
+    }
 
-    long createCompanyReturnId(String requestBody) throws Exception {
-        ResultActions resultActions = mockMvc.perform(post("/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
-        MvcResult mvcResult = resultActions.andReturn();
-        String contentAsString =mvcResult.getResponse().getContentAsString();
-        return new ObjectMapper().readTree(contentAsString).get("id").asLong();
+    Employee createEmployee(String name, int age, String gender, double salary, long company_id) throws Exception {
+        Employee employee = new Employee();
+        employee.setSalary(salary);
+        employee.setGender(gender);
+        employee.setName(name);
+        employee.setAge(age);
+        employee.setCompanyId(company_id);
+        return employee;
     }
 
     @Test
     void should_create_company_when_post_given_a_valid_body() throws Exception {
+        Company company = createCompany("oocl");
+
         mockMvc.perform(post("/companies")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(objectMapper.writeValueAsString(company)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("OOCL"));
+                .andExpect(jsonPath("$.name").value("oocl"));
     }
 
     @Test
     void should_get_company_when_get_given_a_valid_id() throws Exception {
-        long createdId = createCompanyReturnId(requestBody);
+        Company company = createCompany("oocl");
+        companyRepository.save(company);
 
-        mockMvc.perform(get("/companies/"+createdId))
+        mockMvc.perform(get("/companies/"+company.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(createdId))
-                .andExpect(jsonPath("$.name").value("John Smith"))
-                .andExpect(jsonPath("$.age").value(30))
-                .andExpect(jsonPath("$.gender").value("Male"))
-                .andExpect(jsonPath("$.salary").value(60000));
+                .andExpect(jsonPath("$.id").value(company.getId()))
+                .andExpect(jsonPath("$.name").value("oocl"));
     }
 
     @Test
     void should_get_companies_when_get_given_null() throws Exception {
 
         for (int i=0; i<3; i++) {
-            mockMvc.perform(post("/companies")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(requestBody));
+            Company company = createCompany("oocl");
+            companyRepository.save(company);
         }
 
         mockMvc.perform(get("/companies"))
@@ -89,165 +92,69 @@ class CompanyControllerTests {
 
     @Test
     void should_update_company_when_put_given_a_valid_body() throws Exception {
-        long createdId = createCompanyReturnId(requestBody);
+        Company company = createCompany("oocl");
+        companyRepository.save(company);
 
         String updatedRequestBody = """
                         {
-                            "name": "John Smith Updated",
-                            "age": 300,
-                            "gender": "Female",
-                            "salary": 80000
+                            "name": "oocl Updated"
                         }
                 """;
 
-        mockMvc.perform(put("/companies/"+createdId)
+        mockMvc.perform(put("/companies/"+company.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(updatedRequestBody))
                 .andExpect(status().isAccepted())
-                .andExpect(jsonPath("$.id").value(createdId))
-                .andExpect(jsonPath("$.name").value("John Smith Updated"))
-                .andExpect(jsonPath("$.age").value(300))
-                .andExpect(jsonPath("$.gender").value("Female"))
-                .andExpect(jsonPath("$.salary").value(80000));
+                .andExpect(jsonPath("$.id").value(company.getId()))
+                .andExpect(jsonPath("$.name").value("oocl Updated"));
     }
 
     @Test
     void should_update_activeStatus_when_delete_given_a_valid_id() throws Exception {
-        long createdId = createCompanyReturnId(requestBody);
-
-        mockMvc.perform(delete("/companies/"+createdId))
-                .andExpect(jsonPath("$.activeStatus").value(false))
+        Company company = createCompany("oocl");
+        companyRepository.save(company);
+        mockMvc.perform(delete("/companies/"+company.getId()))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void should_get_companies_when_get_given_page_and_size() throws Exception {
-        String requestBody1 = """
-                {
-                    "name": "John Smith1",
-                    "age": 30,
-                    "gender": "Male",
-                    "salary": 60000
-                }
-                """;
-
-        String requestBody2 = """
-                {
-                    "name": "John Smith2",
-                    "age": 30,
-                    "gender": "Male",
-                    "salary": 60000
-                }
-                """;
-
-        String requestBody3 = """
-                {
-                    "name": "John Smith3",
-                    "age": 30,
-                    "gender": "Male",
-                    "salary": 60000
-                }
-                """;
-
-        long createdId1 = createCompanyReturnId(requestBody1);
-        long createdId2 = createCompanyReturnId(requestBody2);
-        long createdId3 = createCompanyReturnId(requestBody3);
+        Company company1 = createCompany("oocl");
+        companyRepository.save(company1);
+        Company company2 = createCompany("oocl");
+        companyRepository.save(company2);
+        Company company3 = createCompany("oocl");
+        companyRepository.save(company3);
 
         mockMvc.perform(get("/companies?page=1&size=2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(createdId1))
-                .andExpect(jsonPath("$[1].id").value(createdId2))
+                .andExpect(jsonPath("$[0].id").value(company1.getId()))
+                .andExpect(jsonPath("$[1].id").value(company2.getId()))
                 .andExpect(jsonPath("$.length()").value(2));
 
-        mockMvc.perform(get("/companies?page=1&size=2"))
+        mockMvc.perform(get("/companies?page=2&size=2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(createdId3))
+                .andExpect(jsonPath("$[0].id").value(company3.getId()))
                 .andExpect(jsonPath("$.length()").value(1));
     }
 
     @Test
     void should_get_null_when_get_given_a_invalid_id() throws Exception {
-        mockMvc.perform(post("/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
-
-        mockMvc.perform(get("/companies/10"))
+        mockMvc.perform(get("/companies/1"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void should_get_null_when_update_given_a_invalid_id() throws Exception {
-        mockMvc.perform(post("/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
-
         String updatedRequestBody = """
                         {
-                            "name": "John Smith Updated",
-                            "age": 300,
-                            "gender": "Female",
-                            "salary": 80000
+                            "name": "oocl Updated"
                         }
                 """;
 
-        mockMvc.perform(put("/companies/10")
+        mockMvc.perform(put("/companies/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updatedRequestBody))
                 .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void should_not_create_when_post_given_age_below_18() throws Exception {
-        String requestBodyBelow18 = """
-                {
-                    "name": "John Smith",
-                    "age": 17,
-                    "gender": "Male",
-                    "salary": 60000
-                }
-                """;
-
-        mockMvc.perform(post("/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBodyBelow18))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void should_not_create_when_post_given_age_over_65() throws Exception {
-        String requestBodyOver65 = """
-                {
-                    "name": "John Smith",
-                    "age": 66,
-                    "gender": "Male",
-                    "salary": 60000
-                }
-                """;
-
-        mockMvc.perform(post("/companies")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBodyOver65))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void should_not_update_company_when_put_given_activeStatus_is_false() throws Exception {
-        long createdId = createCompanyReturnId(requestBody);
-
-        mockMvc.perform(delete("/companies/"+createdId));
-
-        String updatedRequestBody = """
-                        {
-                            "name": "John Smith Updated",
-                            "age": 300,
-                            "gender": "Female",
-                            "salary": 80000
-                        }
-                """;
-
-        mockMvc.perform(put("/companies/"+createdId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(updatedRequestBody))
-                .andExpect(status().isBadRequest());
     }
 }

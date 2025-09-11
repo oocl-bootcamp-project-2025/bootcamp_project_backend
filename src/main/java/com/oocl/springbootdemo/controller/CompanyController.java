@@ -1,6 +1,7 @@
 package com.oocl.springbootdemo.controller;
 
 import com.oocl.springbootdemo.object.Company;
+import com.oocl.springbootdemo.object.UpdateCompanyRequest;
 import com.oocl.springbootdemo.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,8 +36,8 @@ public class CompanyController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Company> updateCompanies(@PathVariable long id, @RequestBody Company updateCompany) {
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(companyService.update(id, updateCompany));
+    public ResponseEntity<Company> updateCompanies(@PathVariable long id, @RequestBody UpdateCompanyRequest updateCompanyRequest) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(companyService.update(id, updateCompanyRequest));
     }
 
     @DeleteMapping("/{id}")

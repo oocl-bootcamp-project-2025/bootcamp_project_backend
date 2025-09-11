@@ -2,6 +2,7 @@ package com.oocl.springbootdemo.service;
 
 import com.oocl.springbootdemo.exception.CompanyNotFoundException;
 import com.oocl.springbootdemo.object.Company;
+import com.oocl.springbootdemo.object.UpdateCompanyRequest;
 import com.oocl.springbootdemo.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,9 +31,9 @@ public class CompanyService {
         return companyRepository.query(page, size);
     }
 
-    public Company update(long id, Company updateCompany) {
+    public Company update(long id, UpdateCompanyRequest updateCompanyRequest) {
         Company foundCompany = get(id);
-        return companyRepository.update(foundCompany, updateCompany);
+        return companyRepository.update(foundCompany, updateCompanyRequest);
     }
 
     public void delete(long id) {
