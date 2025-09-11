@@ -1,6 +1,7 @@
 package com.oocl.springbootdemo.repository;
 
 import com.oocl.springbootdemo.object.Employee;
+import com.oocl.springbootdemo.object.UpdateEmployeeRequest;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface EmployeeRepository {
 
     Employee findById(long id);
 
-    Employee update(Employee target, Employee updateEmployee);
+    Employee update(Employee employee, UpdateEmployeeRequest updateEmployeeRequest);
 
     List<Employee> query(String gender, Integer page, Integer size);
 

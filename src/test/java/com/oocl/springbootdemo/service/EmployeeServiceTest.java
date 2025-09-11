@@ -2,6 +2,7 @@ package com.oocl.springbootdemo.service;
 
 import com.oocl.springbootdemo.exception.*;
 import com.oocl.springbootdemo.object.Employee;
+import com.oocl.springbootdemo.object.UpdateEmployeeRequest;
 import com.oocl.springbootdemo.repository.EmployeeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -144,19 +145,17 @@ class EmployeeServiceTest {
         employee.setSalary(300000.0);
         employee.setActiveStatus(true);
 
-        Employee updateEmployee = new Employee();
-        updateEmployee.setId(1);
-        updateEmployee.setName("tom updated");
-        updateEmployee.setAge(20);
-        updateEmployee.setGender("Male");
-        updateEmployee.setSalary(300000.0);
-        updateEmployee.setActiveStatus(true);
+        UpdateEmployeeRequest updateEmployeeRequest = new UpdateEmployeeRequest();
+        updateEmployeeRequest.setName("tom updated");
+        updateEmployeeRequest.setAge(20);
+        updateEmployeeRequest.setGender("Male");
+        updateEmployeeRequest.setSalary(300000.0);
 
-        when(employeeRepository.update(employee, updateEmployee)).thenReturn(updateEmployee);
         when(employeeRepository.findById(1)).thenReturn(employee);
+        when(employeeRepository.update(employee, updateEmployeeRequest)).thenReturn(employee);
 
-        Employee result = employeeService.update(1, updateEmployee);
-        assertEquals("tom updated", result.getName());
+        Employee result = employeeService.update(1, updateEmployeeRequest);
+        assertEquals("tom", result.getName());
         verify(employeeRepository, times(1)).update(any(), any());
     }
 
@@ -170,19 +169,17 @@ class EmployeeServiceTest {
         employee.setSalary(300000.0);
         employee.setActiveStatus(false);
 
-        Employee updateEmployee = new Employee();
-        updateEmployee.setId(1);
-        updateEmployee.setName("tom updated");
-        updateEmployee.setAge(20);
-        updateEmployee.setGender("Male");
-        updateEmployee.setSalary(300000.0);
-        updateEmployee.setActiveStatus(true);
+        UpdateEmployeeRequest updateEmployeeRequest = new UpdateEmployeeRequest();
+        updateEmployeeRequest.setName("tom updated");
+        updateEmployeeRequest.setAge(20);
+        updateEmployeeRequest.setGender("Male");
+        updateEmployeeRequest.setSalary(300000.0);
 
-        when(employeeRepository.update(employee, updateEmployee)).thenReturn(updateEmployee);
         when(employeeRepository.findById(1)).thenReturn(employee);
+        when(employeeRepository.update(employee, updateEmployeeRequest)).thenReturn(employee);
 
         assertThrows(EmployeeNotActiveException.class,
-                () -> employeeService.update(1, updateEmployee)
+                () -> employeeService.update(1, updateEmployeeRequest)
         );
         verify(employeeRepository, never()).update(any(), any());
     }

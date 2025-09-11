@@ -28,7 +28,6 @@ public class CompanyController {
 
     @GetMapping("")
     public ResponseEntity<List<Company>> queryCompanies(
-            @RequestParam(required = false) String gender,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size
     ) {
@@ -42,6 +41,6 @@ public class CompanyController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Company> deleteCompanies(@PathVariable long id) {
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(companyService.delete(id));
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

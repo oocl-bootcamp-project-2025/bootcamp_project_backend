@@ -1,6 +1,7 @@
 package com.oocl.springbootdemo.repository;
 
 import com.oocl.springbootdemo.object.Employee;
+import com.oocl.springbootdemo.object.UpdateEmployeeRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -30,12 +31,12 @@ public class EmployeeRepositoryInMemoryImplementation implements EmployeeReposit
                 .orElse(null);
     }
 
-    public Employee update(Employee target, Employee updateEmployee) {
-        target.setName(updateEmployee.getName());
-        target.setAge(updateEmployee.getAge());
-        target.setGender(updateEmployee.getGender());
-        target.setSalary(updateEmployee.getSalary());
-        return target;
+    public Employee update(Employee employee, UpdateEmployeeRequest updateEmployeeRequest) {
+        employee.setName(updateEmployeeRequest.getName());
+        employee.setAge(updateEmployeeRequest.getAge());
+        employee.setGender(updateEmployeeRequest.getGender());
+        employee.setSalary(updateEmployeeRequest.getSalary());
+        return employee;
     }
 
     public List<Employee> query(String gender, Integer page, Integer size) {

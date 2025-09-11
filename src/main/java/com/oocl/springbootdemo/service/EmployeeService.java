@@ -2,6 +2,7 @@ package com.oocl.springbootdemo.service;
 
 import com.oocl.springbootdemo.exception.*;
 import com.oocl.springbootdemo.object.Employee;
+import com.oocl.springbootdemo.object.UpdateEmployeeRequest;
 import com.oocl.springbootdemo.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,12 +40,12 @@ public class EmployeeService {
         return employeeRepository.query(gender, page, size);
     }
 
-    public Employee update(long id, Employee updateEmployee) {
+    public Employee update(long id,  UpdateEmployeeRequest updateEmployeeRequest) {
         Employee foundEmployee = get(id);
         if (!foundEmployee.isActiveStatus()) {
             throw new EmployeeNotActiveException();
         }
-        return employeeRepository.update(foundEmployee, updateEmployee);
+        return employeeRepository.update(foundEmployee, updateEmployeeRequest);
     }
 
     public Employee delete(long id) {

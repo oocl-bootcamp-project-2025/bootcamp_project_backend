@@ -35,8 +35,12 @@ public class CompanyService {
         return companyRepository.update(foundCompany, updateCompany);
     }
 
-    public Company delete(long id) {
+    public void delete(long id) {
         Company foundCompany = get(id);
-        return companyRepository.delete(foundCompany);
+        companyRepository.delete(foundCompany);
+    }
+
+    public void clear() {
+        companyRepository.clearAll();
     }
 }
