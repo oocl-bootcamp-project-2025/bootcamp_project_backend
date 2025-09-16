@@ -57,8 +57,18 @@ class TodoControllerTests {
     }
 
     @Test
-    void should_reject_when_post_given_empty_text() throws Exception {
+    void should_reject_when_post_given_todo_with_empty_text() throws Exception {
         Todo todo = createTodo("");
+
+        mockMvc.perform(post("/todos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(todo)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void should_reject_when_post_given_todo_with_no_text() throws Exception {
+        Todo todo = new Todo();
 
         mockMvc.perform(post("/todos")
                         .contentType(MediaType.APPLICATION_JSON)
