@@ -1,5 +1,6 @@
 package com.oocl.springbootdemo.service;
 
+import com.oocl.springbootdemo.exception.TodoNotFoundException;
 import com.oocl.springbootdemo.object.Todo;
 import com.oocl.springbootdemo.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +30,10 @@ public class TodoService {
         return todoRepository.save(todo);
     }
 
-//    public Company update(long id, UpdateCompanyRequest updateCompanyRequest) {
-//        Company foundCompany = get(id);
-//        return companyRepository.update(foundCompany, updateCompanyRequest);
-//    }
+    public Todo update(long id, UpdateTodoRequest updateTodoRequest) {
+        Todo foundTodo = get(id);
+        return todoRepository.update(foundTodo, updateTodoRequest);
+    }
 //
 //    public void delete(long id) {
 //        Company foundCompany = get(id);
