@@ -1,5 +1,6 @@
 package com.oocl.springbootdemo.service;
 
+import com.oocl.springbootdemo.exception.TodoMissingTextException;
 import com.oocl.springbootdemo.exception.TodoNotFoundException;
 import com.oocl.springbootdemo.object.Todo;
 import com.oocl.springbootdemo.object.UpdateTodoRequest;
@@ -28,6 +29,9 @@ public class TodoService {
     }
 
     public Todo create(Todo todo) {
+        if (todo.getText() == null || todo.getText().isEmpty()) {
+            throw new TodoMissingTextException();
+        }
         return todoRepository.save(todo);
     }
 
