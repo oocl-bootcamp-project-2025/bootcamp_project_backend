@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
         return e.getMessage();
     }
 
-    @ExceptionHandler(TodoMissingTextException.class)
+    @ExceptionHandler(TodoIncompletePayloadException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public String handleTodoMissingTextException(Exception e) {
         return e.getMessage();

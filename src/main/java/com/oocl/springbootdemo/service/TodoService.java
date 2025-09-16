@@ -1,6 +1,6 @@
 package com.oocl.springbootdemo.service;
 
-import com.oocl.springbootdemo.exception.TodoMissingTextException;
+import com.oocl.springbootdemo.exception.TodoIncompletePayloadException;
 import com.oocl.springbootdemo.exception.TodoNotFoundException;
 import com.oocl.springbootdemo.object.Todo;
 import com.oocl.springbootdemo.object.TodoRequest;
@@ -30,12 +30,15 @@ public class TodoService {
 
     public Todo create(TodoRequest todoRequest) {
         if (todoRequest.getText() == null || todoRequest.getText().isEmpty()) {
-            throw new TodoMissingTextException();
+            throw new TodoIncompletePayloadException();
         }
         return todoRepository.save(todoRequest);
     }
 
     public Todo update(long id, TodoRequest todoRequest) {
+        if (todoRequest.getText() == null || todoRequest.getText().isEmpty()) {
+            throw new TodoIncompletePayloadException();
+        }
         Todo foundTodo = get(id);
         return todoRepository.update(foundTodo, todoRequest);
     }
