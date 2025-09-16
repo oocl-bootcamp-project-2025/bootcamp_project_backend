@@ -17,10 +17,7 @@ public class TodoRepositoryDBImplementation implements TodoRepository {
 //        employeeJpaRepository.deleteAll();
 //    }
 //
-//    public Employee save(Employee employee) {
-//        employee.setActiveStatus(true);
-//        return employeeJpaRepository.save(employee);
-//    }
+
 //
 //    public Employee findById(long id) {
 //        return employeeJpaRepository.findById(id).orElse(null);
@@ -36,6 +33,11 @@ public class TodoRepositoryDBImplementation implements TodoRepository {
 
     public List<Todo> query() {
         return todoJpaRepository.findAll();
+    }
+
+    public Todo save(Todo todo) {
+        todo.setDone(false);
+        return todoJpaRepository.save(todo);
     }
 
 //    public Employee delete(Employee target) {
