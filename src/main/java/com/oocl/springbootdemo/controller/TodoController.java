@@ -36,9 +36,9 @@ public class TodoController {
     public ResponseEntity<Todo> updateTodo(@PathVariable long id, @RequestBody UpdateTodoRequest updateTodoRequest) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(todoService.update(id, updateTodoRequest));
     }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Company> deleteCompanies(@PathVariable long id) {
-//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-//    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Todo> deleteTodo(@PathVariable long id) {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
