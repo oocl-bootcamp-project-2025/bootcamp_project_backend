@@ -16,7 +16,7 @@ public interface TodoRepository {
 
     Todo update(Todo todo, UpdateTodoRequest updateTodoRequest);
 
-//    void clearAll();
+    void clearAll();
 
 //    Employee delete(Employee target);
 }

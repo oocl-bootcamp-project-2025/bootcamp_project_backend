@@ -1,6 +1,7 @@
 package com.oocl.springbootdemo.controller;
 
 import com.oocl.springbootdemo.object.Todo;
+import com.oocl.springbootdemo.object.UpdateTodoRequest;
 import com.oocl.springbootdemo.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

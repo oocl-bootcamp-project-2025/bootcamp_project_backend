@@ -5,6 +5,7 @@ import com.oocl.springbootdemo.object.Company;
 import com.oocl.springbootdemo.object.Employee;
 import com.oocl.springbootdemo.object.Todo;
 import com.oocl.springbootdemo.repository.TodoRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,6 +33,12 @@ class TodoControllerTests {
         todo.setText(text);
         return todo;
     }
+
+    @BeforeEach
+    void reset() {
+        todoRepository.clearAll();
+    }
+
 
     @Test
     void should_get_empty_json_when_get_storage_contains_no_todos() throws Exception {
