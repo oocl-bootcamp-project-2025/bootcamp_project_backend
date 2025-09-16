@@ -1,6 +1,7 @@
 package com.oocl.springbootdemo.controller;
 
 import com.oocl.springbootdemo.object.Company;
+import com.oocl.springbootdemo.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,7 @@ public class TodoController {
     private TodoService todoService;
 
     @GetMapping("")
-    public ResponseEntity<List<Company>> queryCompanies(
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size
-    ) {
+    public ResponseEntity<List<Company>> queryTodos() {
         return ResponseEntity.status(HttpStatus.OK).body(todoService.query());
     }
 
