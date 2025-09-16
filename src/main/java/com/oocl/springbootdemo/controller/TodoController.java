@@ -31,10 +31,10 @@ public class TodoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(todoService.create(todo));
     }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Company> updateCompanies(@PathVariable long id, @RequestBody UpdateCompanyRequest updateCompanyRequest) {
-//        return ResponseEntity.status(HttpStatus.ACCEPTED).body(companyService.update(id, updateCompanyRequest));
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Todo> updateTodo(@PathVariable long id, @RequestBody UpdateTodoRequest updateTodoRequest) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(todoService.update(id, updateTodoRequest));
+    }
 //
 //    @DeleteMapping("/{id}")
 //    public ResponseEntity<Company> deleteCompanies(@PathVariable long id) {
