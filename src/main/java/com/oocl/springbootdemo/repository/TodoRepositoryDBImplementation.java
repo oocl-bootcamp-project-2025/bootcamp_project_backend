@@ -1,6 +1,7 @@
 package com.oocl.springbootdemo.repository;
 
 import com.oocl.springbootdemo.object.Todo;
+import com.oocl.springbootdemo.object.UpdateTodoRequest;
 import com.oocl.springbootdemo.repository.dao.TodoJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -27,22 +28,15 @@ public class TodoRepositoryDBImplementation implements TodoRepository {
     }
 
     public Todo update(Todo todo, UpdateTodoRequest updateTodoRequest) {
-        todo.setText(UpdateTodoRequest.getText());
-        todo.setDone(UpdateTodoRequest.getDone());
-        return UpdateTodoRequest.save(todo);
+        todo.setText(updateTodoRequest.getText());
+        todo.setDone(updateTodoRequest.isDone());
+        return todoJpaRepository.save(todo);
     }
 
 //    public void clearAll() {
 //        employeeJpaRepository.deleteAll();
 //    }
 //
-
-//
-
-//
-
-
-
 
 //    public Employee delete(Employee target) {
 //        target.setActiveStatus(false);

@@ -1,15 +1,15 @@
 package com.oocl.springbootdemo.object;
 
 public class UpdateTodoRequest {
-    private String name;
+    private String text;
     private boolean done;
 
-    public String getName() {
-        return name;
+    public String getText() {
+        return text;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public boolean isDone() {

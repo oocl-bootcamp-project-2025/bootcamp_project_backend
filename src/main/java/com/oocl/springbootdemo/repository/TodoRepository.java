@@ -3,6 +3,7 @@ package com.oocl.springbootdemo.repository;
 import com.oocl.springbootdemo.object.Employee;
 import com.oocl.springbootdemo.object.Todo;
 import com.oocl.springbootdemo.object.UpdateEmployeeRequest;
+import com.oocl.springbootdemo.object.UpdateTodoRequest;
 
 import java.util.List;
 
