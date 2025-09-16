@@ -12,8 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -75,5 +74,26 @@ class TodoControllerTests {
         mockMvc.perform(get("/todos"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3));
+    }
+
+    @Test
+    void should_update_todo_when_put_given_a_valid_body() throws Exception {
+        Todo todo = createTodo("todo1");
+        todoRepository.save(todo);
+
+        String updatedRequestBody = """
+                        {
+                            "text": "todo1-done",
+                            "done": true
+                        }
+                """;
+
+        mockMvc.perform(put("/todos/" + todo.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updatedRequestBody))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.id").value(todo.getId()))
+                .andExpect(jsonPath("$.text").value("todo1-done"))
+                .andExpect(jsonPath("$.done").value(true));
     }
 }
