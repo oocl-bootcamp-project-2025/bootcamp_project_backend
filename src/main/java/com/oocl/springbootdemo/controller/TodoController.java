@@ -21,15 +21,16 @@ public class TodoController {
         return ResponseEntity.status(HttpStatus.OK).body(todoService.query());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Todo> getTodo(@PathVariable long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(todoService.get(id));
+    }
+
     @PostMapping("")
     public ResponseEntity<Todo> createTodo(@RequestBody Todo todo) {
         return ResponseEntity.status(HttpStatus.CREATED).body(todoService.create(todo));
     }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Company> getCompany(@PathVariable long id) {
-//        return ResponseEntity.status(HttpStatus.OK).body(companyService.get(id));
-//    }
+
 //    @PutMapping("/{id}")
 //    public ResponseEntity<Company> updateCompanies(@PathVariable long id, @RequestBody UpdateCompanyRequest updateCompanyRequest) {
 //        return ResponseEntity.status(HttpStatus.ACCEPTED).body(companyService.update(id, updateCompanyRequest));
