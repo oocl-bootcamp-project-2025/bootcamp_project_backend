@@ -1,6 +1,6 @@
 package com.oocl.springbootdemo.object;
 
-public class UpdateTodoRequest {
+public class TodoRequest {
     private String text;
     private boolean done;
 

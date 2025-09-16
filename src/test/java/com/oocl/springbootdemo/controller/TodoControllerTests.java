@@ -2,6 +2,7 @@ package com.oocl.springbootdemo.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oocl.springbootdemo.object.Todo;
+import com.oocl.springbootdemo.object.TodoRequest;
 import com.oocl.springbootdemo.repository.TodoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,10 +29,10 @@ class TodoControllerTests {
     @Autowired
     private TodoRepository todoRepository;
 
-    Todo createTodo(String text) throws Exception {
-        Todo todo = new Todo();
-        todo.setText(text);
-        return todo;
+    TodoRequest createTodoRequest(String text) throws Exception {
+        TodoRequest todoRequest = new TodoRequest();
+        todoRequest.setText(text);
+        return todoRequest;
     }
 
     long createTodoReturnId(String text) throws Exception {
@@ -43,7 +44,7 @@ class TodoControllerTests {
                 }
                 """, text)));
         MvcResult mvcResult = resultActions.andReturn();
-        String contentAsString =mvcResult.getResponse().getContentAsString();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
         return new ObjectMapper().readTree(contentAsString).get("id").asLong();
     }
 
@@ -61,36 +62,40 @@ class TodoControllerTests {
 
     @Test
     void should_create_todo_when_post_given_a_valid_body() throws Exception {
-        Todo todo = createTodo("todo1");
+        TodoRequest todoRequest = createTodoRequest("todo1");
 
         mockMvc.perform(post("/todos")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(todo)))
+                        .content(objectMapper.writeValueAsString(todoRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.text").value("todo1"))
                 .andExpect(jsonPath("$.done").value(false));
     }
 
-//    @Test
-//    void should_create_todo_and_ignore_id_when_post_given_a_valid_body_with_id() throws Exception {
-//        Todo todo = createTodo("todo1");
-//        todo.setId(1);
-//
-//        mockMvc.perform(post("/todos")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(todo)))
-//                .andExpect(status().isCreated())
-//                .andExpect(jsonPath("$.text").value("todo1"))
-//                .andExpect(jsonPath("$.done").value(false));
-//    }
-
     @Test
-    void should_reject_when_post_given_todo_with_empty_text() throws Exception {
-        Todo todo = createTodo("");
+    void should_create_todo_and_ignore_id_when_post_given_a_valid_body_with_id() throws Exception {
+        String requestBody = """
+                            {
+                                "id": 1,
+                                "text": "todo1"
+                            }
+                        """;
 
         mockMvc.perform(post("/todos")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(todo)))
+                        .content(requestBody))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.text").value("todo1"))
+                .andExpect(jsonPath("$.done").value(false));
+    }
+
+    @Test
+    void should_reject_when_post_given_todo_with_empty_text() throws Exception {
+        TodoRequest todoRequest = createTodoRequest("");
+
+        mockMvc.perform(post("/todos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(todoRequest)))
                 .andExpect(status().isUnprocessableEntity());
     }
 
@@ -106,8 +111,8 @@ class TodoControllerTests {
 
     @Test
     void should_get_1_todo_when_get_given_storage_contains_1_todo() throws Exception {
-        Todo todo = createTodo("todo1");
-        todoRepository.save(todo);
+        TodoRequest todoRequest = createTodoRequest("todo1");
+        todoRepository.save(todoRequest);
 
         mockMvc.perform(get("/todos"))
                 .andExpect(status().isOk())
@@ -116,12 +121,11 @@ class TodoControllerTests {
 
     @Test
     void should_get_todo_when_get_given_a_valid_id() throws Exception {
-        Todo todo = createTodo("todo1");
-        todoRepository.save(todo);
+        long id = createTodoReturnId("todo1");
 
-        mockMvc.perform(get("/todos/" + todo.getId()))
+        mockMvc.perform(get("/todos/" + id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(todo.getId()))
+                .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.text").value("todo1"))
                 .andExpect(jsonPath("$.done").value(false));
     }
@@ -135,8 +139,8 @@ class TodoControllerTests {
     @Test
     void should_get_todos_when_get_given_null() throws Exception {
         for(int i=1; i<4; i++) {
-            Todo todo = createTodo("todo"+i);
-            todoRepository.save(todo);
+            TodoRequest todoRequest = createTodoRequest("todo"+i);
+            todoRepository.save(todoRequest);
         }
 
         mockMvc.perform(get("/todos"))
@@ -146,8 +150,7 @@ class TodoControllerTests {
 
     @Test
     void should_update_todo_when_put_given_a_valid_body() throws Exception {
-        Todo todo = createTodo("todo1");
-        todoRepository.save(todo);
+        long id = createTodoReturnId("todo1");
 
         String updatedRequestBody = """
                         {
@@ -156,11 +159,11 @@ class TodoControllerTests {
                         }
                 """;
 
-        mockMvc.perform(put("/todos/" + todo.getId())
+        mockMvc.perform(put("/todos/" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updatedRequestBody))
                 .andExpect(status().isAccepted())
-                .andExpect(jsonPath("$.id").value(todo.getId()))
+                .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.text").value("todo1-done"))
                 .andExpect(jsonPath("$.done").value(true));
     }

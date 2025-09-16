@@ -3,7 +3,7 @@ package com.oocl.springbootdemo.service;
 import com.oocl.springbootdemo.exception.TodoMissingTextException;
 import com.oocl.springbootdemo.exception.TodoNotFoundException;
 import com.oocl.springbootdemo.object.Todo;
-import com.oocl.springbootdemo.object.UpdateTodoRequest;
+import com.oocl.springbootdemo.object.TodoRequest;
 import com.oocl.springbootdemo.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,16 +28,16 @@ public class TodoService {
         return foundTodo;
     }
 
-    public Todo create(Todo todo) {
-        if (todo.getText() == null || todo.getText().isEmpty()) {
+    public Todo create(TodoRequest todoRequest) {
+        if (todoRequest.getText() == null || todoRequest.getText().isEmpty()) {
             throw new TodoMissingTextException();
         }
-        return todoRepository.save(todo);
+        return todoRepository.save(todoRequest);
     }
 
-    public Todo update(long id, UpdateTodoRequest updateTodoRequest) {
+    public Todo update(long id, TodoRequest todoRequest) {
         Todo foundTodo = get(id);
-        return todoRepository.update(foundTodo, updateTodoRequest);
+        return todoRepository.update(foundTodo, todoRequest);
     }
 
     public void delete(long id) {

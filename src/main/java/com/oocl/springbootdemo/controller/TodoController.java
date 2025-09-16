@@ -1,7 +1,7 @@
 package com.oocl.springbootdemo.controller;
 
 import com.oocl.springbootdemo.object.Todo;
-import com.oocl.springbootdemo.object.UpdateTodoRequest;
+import com.oocl.springbootdemo.object.TodoRequest;
 import com.oocl.springbootdemo.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,13 +28,13 @@ public class TodoController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Todo> createTodo(@RequestBody Todo todo) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(todoService.create(todo));
+    public ResponseEntity<Todo> createTodo(@RequestBody TodoRequest todoRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(todoService.create(todoRequest));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Todo> updateTodo(@PathVariable long id, @RequestBody UpdateTodoRequest updateTodoRequest) {
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(todoService.update(id, updateTodoRequest));
+    public ResponseEntity<Todo> updateTodo(@PathVariable long id, @RequestBody TodoRequest todoRequest) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(todoService.update(id, todoRequest));
     }
 
     @DeleteMapping("/{id}")
