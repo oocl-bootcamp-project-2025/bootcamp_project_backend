@@ -1,16 +1,8 @@
 package com.oocl.springbootdemo.object;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
-@Builder
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "todo")
 public class Todo {
     @Id
@@ -18,4 +10,28 @@ public class Todo {
     private long id;
     private String text;
     private boolean done;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
+    }
 }
