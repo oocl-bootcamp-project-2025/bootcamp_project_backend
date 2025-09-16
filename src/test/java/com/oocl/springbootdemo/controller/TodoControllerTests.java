@@ -22,7 +22,7 @@ class TodoControllerTests {
 
     @Test
     void should_get_empty_json_when_get_storage_contains_no_todos() throws Exception {
-        mockMvc.perform(get("/todos/"))
+        mockMvc.perform(get("/todos"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
     }

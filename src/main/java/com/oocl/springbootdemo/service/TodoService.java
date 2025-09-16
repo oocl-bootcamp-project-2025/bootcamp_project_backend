@@ -1,6 +1,5 @@
 package com.oocl.springbootdemo.service;
 
-import com.oocl.springbootdemo.object.Company;
 import com.oocl.springbootdemo.object.Todo;
 import com.oocl.springbootdemo.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;

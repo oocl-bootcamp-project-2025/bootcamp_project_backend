@@ -1,12 +1,8 @@
 package com.oocl.springbootdemo.repository;
 
-import com.oocl.springbootdemo.object.Employee;
 import com.oocl.springbootdemo.object.Todo;
-import com.oocl.springbootdemo.object.UpdateEmployeeRequest;
-import com.oocl.springbootdemo.repository.dao.EmployeeJpaRepository;
 import com.oocl.springbootdemo.repository.dao.TodoJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
