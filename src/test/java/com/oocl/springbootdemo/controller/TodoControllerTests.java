@@ -1,8 +1,9 @@
 package com.oocl.springbootdemo.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oocl.springbootdemo.object.Company;
+import com.oocl.springbootdemo.object.Employee;
 import com.oocl.springbootdemo.object.Todo;
+import com.oocl.springbootdemo.repository.TodoRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,11 +24,12 @@ class TodoControllerTests {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private TodoRepository todoRepository;
 
     Todo createTodo(String text) throws Exception {
         Todo todo = new Todo();
         todo.setText(text);
-        todo.setDone(false);
         return todo;
     }
 
@@ -46,6 +48,18 @@ class TodoControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(todo)))
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.text").value("todo1"))
+                .andExpect(jsonPath("$.done").value(false));
+    }
+
+    @Test
+    void should_get_todo_when_get_given_a_valid_id() throws Exception {
+        Todo todo = createTodo("todo1");
+        todoRepository.save(todo);
+
+        mockMvc.perform(get("/todos/" + todo.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(todo.getId()))
                 .andExpect(jsonPath("$.text").value("todo1"))
                 .andExpect(jsonPath("$.done").value(false));
     }
