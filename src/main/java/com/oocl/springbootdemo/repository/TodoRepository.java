@@ -7,15 +7,12 @@ import com.oocl.springbootdemo.object.UpdateEmployeeRequest;
 import java.util.List;
 
 public interface TodoRepository {
-//    void clearAll();
-
-//    Employee save(Employee employee);
-//
-//    Employee findById(long id);
-//
-//    Employee update(Employee employee, UpdateEmployeeRequest updateEmployeeRequest);
-
     List<Todo> query();
 
+    Todo save(Todo todo);
+
+//    void clearAll();
+//    Employee findById(long id);
+//    Employee update(Employee employee, UpdateEmployeeRequest updateEmployeeRequest);
 //    Employee delete(Employee target);
 }
