@@ -24,6 +24,6 @@ class TodoControllerTests {
     void should_get_empty_json_when_get_storage_contains_no_todos() throws Exception {
         mockMvc.perform(get("/todos/"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.todos").value(new ArrayList<>()));
+                .andExpect(jsonPath("$.length()").value(0));
     }
 }
