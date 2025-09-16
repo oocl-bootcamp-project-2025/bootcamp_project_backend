@@ -26,6 +26,12 @@ public class TodoRepositoryDBImplementation implements TodoRepository {
         return todoJpaRepository.save(todo);
     }
 
+    public Todo update(Todo todo, UpdateTodoRequest updateTodoRequest) {
+        todo.setText(UpdateTodoRequest.getText());
+        todo.setDone(UpdateTodoRequest.getDone());
+        return UpdateTodoRequest.save(todo);
+    }
+
 //    public void clearAll() {
 //        employeeJpaRepository.deleteAll();
 //    }
@@ -34,13 +40,7 @@ public class TodoRepositoryDBImplementation implements TodoRepository {
 //
 
 //
-//    public Employee update(Employee employee, UpdateEmployeeRequest updateEmployeeRequest) {
-//        employee.setName(updateEmployeeRequest.getName());
-//        employee.setSalary(updateEmployeeRequest.getSalary());
-//        employee.setGender(updateEmployeeRequest.getGender());
-//        employee.setAge(updateEmployeeRequest.getAge());
-//        return employeeJpaRepository.save(employee);
-//    }
+
 
 
 

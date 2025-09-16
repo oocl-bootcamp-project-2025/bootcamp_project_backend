@@ -13,7 +13,9 @@ public interface TodoRepository {
 
     Todo findById(long id);
 
+    Todo update(Todo todo, UpdateTodoRequest updateTodoRequest);
+
 //    void clearAll();
-//    Employee update(Employee employee, UpdateEmployeeRequest updateEmployeeRequest);
+
 //    Employee delete(Employee target);
 }
