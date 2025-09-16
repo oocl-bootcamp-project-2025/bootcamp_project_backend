@@ -12,11 +12,6 @@ public class TodoService {
 
     @Autowired
     private TodoRepository todoRepository;
-
-//    public Company create(Company company) {
-//        return companyRepository.save(company);
-//    }
-
 //    public Company get(long id) {
 //        Company foundCompany = companyRepository.findById(id);
 //        if (foundCompany == null) {
@@ -27,6 +22,10 @@ public class TodoService {
 
     public List<Todo> query() {
         return todoRepository.query();
+    }
+
+    public Todo create(Todo todo) {
+        return todoRepository.save(todo);
     }
 
 //    public Company update(long id, UpdateCompanyRequest updateCompanyRequest) {
