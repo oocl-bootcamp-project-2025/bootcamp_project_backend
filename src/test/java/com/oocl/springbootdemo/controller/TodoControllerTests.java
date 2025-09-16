@@ -53,6 +53,7 @@ class TodoControllerTests {
         todoRepository.clearAll();
     }
 
+    //AC1
     @Test
     void should_get_empty_json_when_get_given_storage_contains_no_todos() throws Exception {
         mockMvc.perform(get("/todos"))
@@ -61,31 +62,25 @@ class TodoControllerTests {
     }
 
     @Test
+    void should_get_1_todo_when_get_given_storage_contains_1_todo() throws Exception {
+        TodoRequest todoRequest = createTodoRequest("Buy milk");
+        todoRepository.save(todoRequest);
+
+        mockMvc.perform(get("/todos"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1));
+    }
+
+    //AC2
+    @Test
     void should_create_todo_when_post_given_a_valid_body() throws Exception {
-        TodoRequest todoRequest = createTodoRequest("todo1");
+        TodoRequest todoRequest = createTodoRequest("Buy milk");
 
         mockMvc.perform(post("/todos")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(todoRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.text").value("todo1"))
-                .andExpect(jsonPath("$.done").value(false));
-    }
-
-    @Test
-    void should_create_todo_and_ignore_id_when_post_given_a_valid_body_with_id() throws Exception {
-        String requestBody = """
-                            {
-                                "id": 1,
-                                "text": "todo1"
-                            }
-                        """;
-
-        mockMvc.perform(post("/todos")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.text").value("todo1"))
+                .andExpect(jsonPath("$.text").value("Buy milk"))
                 .andExpect(jsonPath("$.done").value(false));
     }
 
@@ -110,23 +105,87 @@ class TodoControllerTests {
     }
 
     @Test
-    void should_get_1_todo_when_get_given_storage_contains_1_todo() throws Exception {
-        TodoRequest todoRequest = createTodoRequest("todo1");
-        todoRepository.save(todoRequest);
+    void should_create_todo_and_ignore_id_when_post_given_a_valid_body_with_id() throws Exception {
+        String requestBody = """
+                            {
+                                "id": 1,
+                                "text": "Buy milk"
+                            }
+                        """;
 
-        mockMvc.perform(get("/todos"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1));
+        mockMvc.perform(post("/todos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.text").value("Buy milk"))
+                .andExpect(jsonPath("$.done").value(false));
+    }
+
+    //AC3
+    @Test
+    void should_update_todo_when_put_given_a_valid_body() throws Exception {
+        long id = createTodoReturnId("Buy milk");
+
+        String updatedRequestBody = """
+                        {
+                            "text": "Buy milk-done",
+                            "done": true
+                        }
+                """;
+
+        mockMvc.perform(put("/todos/" + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updatedRequestBody))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.text").value("Buy milk-done"))
+                .andExpect(jsonPath("$.done").value(true));
     }
 
     @Test
+    void should_update_todo_and_ignore_id_when_put_given_a_valid_body_with_id() throws Exception {
+        long id = createTodoReturnId("Buy milk");
+
+        String updatedRequestBody = """
+                        {
+                            "text": "Buy milk-done",
+                            "done": true
+                        }
+                """;
+
+        mockMvc.perform(put("/todos/" + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updatedRequestBody))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.text").value("Buy milk-done"))
+                .andExpect(jsonPath("$.done").value(true));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Test
     void should_get_todo_when_get_given_a_valid_id() throws Exception {
-        long id = createTodoReturnId("todo1");
+        long id = createTodoReturnId("Buy milk");
 
         mockMvc.perform(get("/todos/" + id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.text").value("todo1"))
+                .andExpect(jsonPath("$.text").value("Buy milk"))
                 .andExpect(jsonPath("$.done").value(false));
     }
 
@@ -148,29 +207,11 @@ class TodoControllerTests {
                 .andExpect(jsonPath("$.length()").value(3));
     }
 
-    @Test
-    void should_update_todo_when_put_given_a_valid_body() throws Exception {
-        long id = createTodoReturnId("todo1");
 
-        String updatedRequestBody = """
-                        {
-                            "text": "todo1-done",
-                            "done": true
-                        }
-                """;
-
-        mockMvc.perform(put("/todos/" + id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(updatedRequestBody))
-                .andExpect(status().isAccepted())
-                .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.text").value("todo1-done"))
-                .andExpect(jsonPath("$.done").value(true));
-    }
 
     @Test
     void should_get_null_when_get_given_a_deleted_id() throws Exception {
-        long id = createTodoReturnId("todo1");
+        long id = createTodoReturnId("Buy milk");
 
         System.out.println(id);
 
