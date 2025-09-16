@@ -41,7 +41,7 @@ class EmployeeControllerTests {
 
     Company createCompany(String name) throws Exception {
         Company company = new Company();
-        company.setName("oocl");
+        company.setName(name);
         return company;
     }
 
