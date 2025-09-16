@@ -108,4 +108,19 @@ class TodoControllerTests {
                 .andExpect(jsonPath("$.text").value("todo1-done"))
                 .andExpect(jsonPath("$.done").value(true));
     }
+
+    @Test
+    void should_get_null_when_get_given_a_deleted_id() throws Exception {
+        Todo todo = createTodo("todo1");
+        mockMvc.perform(post("/todos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(todo)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.text").value("todo1"))
+                .andExpect(jsonPath("$.done").value(false));
+
+        todoRepository.delete(todo);
+        mockMvc.perform(get("/employees/"+todo.getId()))
+                .andExpect(status().isNotFound());
+    }
 }
