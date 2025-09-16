@@ -39,7 +39,6 @@ class TodoControllerTests {
         todoRepository.clearAll();
     }
 
-
     @Test
     void should_get_empty_json_when_get_storage_contains_no_todos() throws Exception {
         mockMvc.perform(get("/todos"))
@@ -69,6 +68,12 @@ class TodoControllerTests {
                 .andExpect(jsonPath("$.id").value(todo.getId()))
                 .andExpect(jsonPath("$.text").value("todo1"))
                 .andExpect(jsonPath("$.done").value(false));
+    }
+
+    @Test
+    void should_get_null_when_get_given_a_invalid_id() throws Exception {
+        mockMvc.perform(get("/employees/1"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
