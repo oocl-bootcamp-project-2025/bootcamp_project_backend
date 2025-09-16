@@ -16,7 +16,7 @@ public interface TodoRepository {
 
     Todo update(Todo todo, UpdateTodoRequest updateTodoRequest);
 
-    Todo delete(Todo todo);
+    void delete(Todo todo);
 
     void clearAll();
 }
