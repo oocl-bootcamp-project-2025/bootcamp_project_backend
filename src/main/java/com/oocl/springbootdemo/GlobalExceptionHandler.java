@@ -22,6 +22,12 @@ public class GlobalExceptionHandler {
         return e.getMessage();
     }
 
+    @ExceptionHandler(TodoNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleTodoNotFoundException(Exception e) {
+        return e.getMessage();
+    }
+
     @ExceptionHandler(EmployeeNotActiveException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleEmployeeNotActiveException(Exception e) {

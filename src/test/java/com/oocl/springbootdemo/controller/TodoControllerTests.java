@@ -72,7 +72,7 @@ class TodoControllerTests {
 
     @Test
     void should_get_null_when_get_given_a_invalid_id() throws Exception {
-        mockMvc.perform(get("/employees/1"))
+        mockMvc.perform(get("/todos/1"))
                 .andExpect(status().isNotFound());
     }
 
@@ -119,8 +119,10 @@ class TodoControllerTests {
                 .andExpect(jsonPath("$.text").value("todo1"))
                 .andExpect(jsonPath("$.done").value(false));
 
-        todoRepository.delete(todo);
-        mockMvc.perform(get("/employees/"+todo.getId()))
+        mockMvc.perform(delete("/todos/"+todo.getId()))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/todos/"+todo.getId()))
                 .andExpect(status().isNotFound());
     }
 }
