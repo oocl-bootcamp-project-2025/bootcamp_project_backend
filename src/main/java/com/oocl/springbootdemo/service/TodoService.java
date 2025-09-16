@@ -2,6 +2,7 @@ package com.oocl.springbootdemo.service;
 
 import com.oocl.springbootdemo.exception.TodoNotFoundException;
 import com.oocl.springbootdemo.object.Todo;
+import com.oocl.springbootdemo.object.UpdateTodoRequest;
 import com.oocl.springbootdemo.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
