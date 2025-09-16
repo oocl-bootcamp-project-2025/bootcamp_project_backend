@@ -10,6 +10,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -30,6 +32,19 @@ class TodoControllerTests {
         Todo todo = new Todo();
         todo.setText(text);
         return todo;
+    }
+
+    long createTodoReturnId(String text) throws Exception {
+        ResultActions resultActions = mockMvc.perform(post("/todos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(String.format("""
+                {
+                    "text": "%s"
+                }
+                """, text)));
+        MvcResult mvcResult = resultActions.andReturn();
+        String contentAsString =mvcResult.getResponse().getContentAsString();
+        return new ObjectMapper().readTree(contentAsString).get("id").asLong();
     }
 
     @BeforeEach
@@ -55,6 +70,19 @@ class TodoControllerTests {
                 .andExpect(jsonPath("$.text").value("todo1"))
                 .andExpect(jsonPath("$.done").value(false));
     }
+
+//    @Test
+//    void should_create_todo_and_ignore_id_when_post_given_a_valid_body_with_id() throws Exception {
+//        Todo todo = createTodo("todo1");
+//        todo.setId(1);
+//
+//        mockMvc.perform(post("/todos")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(todo)))
+//                .andExpect(status().isCreated())
+//                .andExpect(jsonPath("$.text").value("todo1"))
+//                .andExpect(jsonPath("$.done").value(false));
+//    }
 
     @Test
     void should_reject_when_post_given_todo_with_empty_text() throws Exception {
@@ -139,18 +167,14 @@ class TodoControllerTests {
 
     @Test
     void should_get_null_when_get_given_a_deleted_id() throws Exception {
-        Todo todo = createTodo("todo1");
-        mockMvc.perform(post("/todos")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(todo)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.text").value("todo1"))
-                .andExpect(jsonPath("$.done").value(false));
+        long id = createTodoReturnId("todo1");
 
-        mockMvc.perform(delete("/todos/"+todo.getId()))
+        System.out.println(id);
+
+        mockMvc.perform(delete("/todos/"+id))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/todos/"+todo.getId()))
+        mockMvc.perform(get("/todos/"+id))
                 .andExpect(status().isNotFound());
     }
 }
