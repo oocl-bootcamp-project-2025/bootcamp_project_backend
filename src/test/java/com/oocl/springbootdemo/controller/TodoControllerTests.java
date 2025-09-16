@@ -1,8 +1,6 @@
 package com.oocl.springbootdemo.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oocl.springbootdemo.object.Company;
-import com.oocl.springbootdemo.object.Employee;
 import com.oocl.springbootdemo.object.Todo;
 import com.oocl.springbootdemo.repository.TodoRepository;
 import org.junit.jupiter.api.BeforeEach;
