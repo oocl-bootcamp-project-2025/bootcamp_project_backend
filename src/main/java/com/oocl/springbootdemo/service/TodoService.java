@@ -12,16 +12,17 @@ public class TodoService {
 
     @Autowired
     private TodoRepository todoRepository;
-//    public Company get(long id) {
-//        Company foundCompany = companyRepository.findById(id);
-//        if (foundCompany == null) {
-//            throw new CompanyNotFoundException();
-//        }
-//        return foundCompany;
-//    }
 
     public List<Todo> query() {
         return todoRepository.query();
+    }
+
+    public Todo get(long id) {
+        Todo foundTodo = todoRepository.findById(id);
+        if (foundTodo  == null) {
+            throw new TodoNotFoundException();
+        }
+        return foundTodo;
     }
 
     public Todo create(Todo todo) {
