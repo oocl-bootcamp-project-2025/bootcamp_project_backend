@@ -11,8 +11,9 @@ public interface TodoRepository {
 
     Todo save(Todo todo);
 
+    Todo findById(long id);
+
 //    void clearAll();
-//    Employee findById(long id);
 //    Employee update(Employee employee, UpdateEmployeeRequest updateEmployeeRequest);
 //    Employee delete(Employee target);
 }

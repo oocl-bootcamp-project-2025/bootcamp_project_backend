@@ -13,15 +13,26 @@ public class TodoRepositoryDBImplementation implements TodoRepository {
     @Autowired
     private TodoJpaRepository todoJpaRepository;
 
+    public List<Todo> query() {
+        return todoJpaRepository.findAll();
+    }
+
+    public Todo findById(long id) {
+        return todoJpaRepository.findById(id).orElse(null);
+    }
+
+    public Todo save(Todo todo) {
+        todo.setDone(false);
+        return todoJpaRepository.save(todo);
+    }
+
 //    public void clearAll() {
 //        employeeJpaRepository.deleteAll();
 //    }
 //
 
 //
-//    public Employee findById(long id) {
-//        return employeeJpaRepository.findById(id).orElse(null);
-//    }
+
 //
 //    public Employee update(Employee employee, UpdateEmployeeRequest updateEmployeeRequest) {
 //        employee.setName(updateEmployeeRequest.getName());
@@ -31,14 +42,7 @@ public class TodoRepositoryDBImplementation implements TodoRepository {
 //        return employeeJpaRepository.save(employee);
 //    }
 
-    public List<Todo> query() {
-        return todoJpaRepository.findAll();
-    }
 
-    public Todo save(Todo todo) {
-        todo.setDone(false);
-        return todoJpaRepository.save(todo);
-    }
 
 //    public Employee delete(Employee target) {
 //        target.setActiveStatus(false);
