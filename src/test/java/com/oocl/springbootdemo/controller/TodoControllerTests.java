@@ -38,7 +38,7 @@ class TodoControllerTests {
     }
 
     @Test
-    void should_get_empty_json_when_get_storage_contains_no_todos() throws Exception {
+    void should_get_empty_json_when_get_given_storage_contains_no_todos() throws Exception {
         mockMvc.perform(get("/todos"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
@@ -54,6 +54,16 @@ class TodoControllerTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.text").value("todo1"))
                 .andExpect(jsonPath("$.done").value(false));
+    }
+
+    @Test
+    void should_get_1_todo_when_get_given_storage_contains_1_todo() throws Exception {
+        Todo todo = createTodo("todo1");
+        todoRepository.save(todo);
+
+        mockMvc.perform(get("/todos"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1));
     }
 
     @Test
