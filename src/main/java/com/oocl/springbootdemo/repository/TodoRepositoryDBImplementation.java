@@ -33,13 +33,11 @@ public class TodoRepositoryDBImplementation implements TodoRepository {
         return todoJpaRepository.save(todo);
     }
 
+    public void delete(Todo todo) {
+        todoJpaRepository.delete(todo);
+    }
+
     public void clearAll() {
         todoJpaRepository.deleteAll();
     }
-
-
-//    public Employee delete(Employee target) {
-//        target.setActiveStatus(false);
-//        return employeeJpaRepository.save(target);
-//    }
 }
