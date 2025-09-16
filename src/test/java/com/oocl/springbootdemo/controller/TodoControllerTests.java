@@ -1,6 +1,7 @@
 package com.oocl.springbootdemo.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oocl.springbootdemo.object.Company;
 import com.oocl.springbootdemo.object.Employee;
 import com.oocl.springbootdemo.object.Todo;
 import com.oocl.springbootdemo.repository.TodoRepository;
@@ -62,5 +63,17 @@ class TodoControllerTests {
                 .andExpect(jsonPath("$.id").value(todo.getId()))
                 .andExpect(jsonPath("$.text").value("todo1"))
                 .andExpect(jsonPath("$.done").value(false));
+    }
+
+    @Test
+    void should_get_todos_when_get_given_null() throws Exception {
+        for(int i=1; i<4; i++) {
+            Todo todo = createTodo("todo"+i);
+            todoRepository.save(todo);
+        }
+
+        mockMvc.perform(get("/todos"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(3));
     }
 }
