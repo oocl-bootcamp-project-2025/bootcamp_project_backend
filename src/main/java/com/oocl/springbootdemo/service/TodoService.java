@@ -35,13 +35,9 @@ public class TodoService {
         Todo foundTodo = get(id);
         return todoRepository.update(foundTodo, updateTodoRequest);
     }
-//
-//    public void delete(long id) {
-//        Company foundCompany = get(id);
-//        companyRepository.delete(foundCompany);
-//    }
-//
-//    public void clear() {
-//        companyRepository.clearAll();
-//    }
+
+    public void delete(long id) {
+        Todo foundTodo = get(id);
+        todoRepository.delete(foundTodo);
+    }
 }
