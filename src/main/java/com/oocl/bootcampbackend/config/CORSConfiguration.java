@@ -1,4 +1,4 @@
-package com.oocl.springbootdemo.config;
+package com.oocl.bootcampbackend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

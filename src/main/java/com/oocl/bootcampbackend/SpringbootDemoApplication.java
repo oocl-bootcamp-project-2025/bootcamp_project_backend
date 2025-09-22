@@ -1,4 +1,4 @@
-package com.oocl.springbootdemo;
+package com.oocl.bootcampbackend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
