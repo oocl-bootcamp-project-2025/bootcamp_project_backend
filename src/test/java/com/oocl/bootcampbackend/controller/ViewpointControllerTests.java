@@ -51,4 +51,18 @@ class ViewpointControllerTests {
                 .andExpect(jsonPath("$.length()").value(10))
                 .andExpect(jsonPath("$[0]").value("beijing0"));
     }
+
+    @Test
+    void should_get_areas_when_get_all_area_given_storage_with_duplicated_area() throws Exception {
+        for (int i=0; i<3; i++) {
+            for (int j=0; j<3; j++) {
+                createViewpoint("beijing"+i);
+            }
+        }
+
+        mockMvc.perform(get("/viewpoints/areas"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(3))
+                .andExpect(jsonPath("$[1]").value("beijing1"));
+    }
 }

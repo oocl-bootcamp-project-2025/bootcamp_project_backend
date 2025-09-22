@@ -22,4 +22,9 @@ public class ViewpointController {
     public ResponseEntity<List<String>> getAreas(@PathVariable String area) {
         return ResponseEntity.status(HttpStatus.OK).body(viewpointService.getArea(area));
     }
+
+    @GetMapping("/areas")
+    public ResponseEntity<List<String>> getAreas() {
+        return ResponseEntity.status(HttpStatus.OK).body(viewpointService.getAllArea());
+    }
 }

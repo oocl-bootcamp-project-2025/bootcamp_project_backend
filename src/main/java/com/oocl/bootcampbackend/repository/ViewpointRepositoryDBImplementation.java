@@ -24,4 +24,13 @@ public class ViewpointRepositoryDBImplementation implements ViewpointRepository 
                 .map(Viewpoint::getArea)
                 .toList();
     }
+
+    public List<String> findAllArea() {
+        return viewpointJpaRepository
+                .findAll()
+                .stream()
+                .map(Viewpoint::getArea)
+                .distinct()
+                .toList();
+    }
 }
