@@ -41,13 +41,14 @@ class ViewpointControllerTests {
     }
 
     @Test
-    void should_get_empty_json_when_get_given_storage_contains_no_todos() throws Exception {
+    void should_get_areas_when_get_area_given_incompleted_area_name() throws Exception {
         for (int i=0; i<10; i++) {
             createViewpoint("beijing"+i);
         }
 
-        mockMvc.perform(get("/viewpoints/beijing"))
+        mockMvc.perform(get("/viewpoints/bei"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(10));
+                .andExpect(jsonPath("$.length()").value(10))
+                .andExpect(jsonPath("$[0]").value("beijing0"));
     }
 }
