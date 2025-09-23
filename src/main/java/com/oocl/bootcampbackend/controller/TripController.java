@@ -20,9 +20,6 @@ public class TripController
 
     @PostMapping("/trips")
     public ResponseEntity<Void> saveTrips(@RequestBody ItineraryRequest itineraryRequest){
-        // 1. 转化成Trip列表
-//        TripsDTO tripDTOs = itineraryRequest.getTrips();
-        // 2. 存进数据库
         tripService.save(itineraryRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

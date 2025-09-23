@@ -5,6 +5,7 @@ import com.oocl.bootcampbackend.controller.dto.TripDTO;
 import com.oocl.bootcampbackend.controller.dto.TripsDTO;
 import com.oocl.bootcampbackend.entity.Trip;
 import com.oocl.bootcampbackend.entity.User;
+import com.oocl.bootcampbackend.exception.NullPhoneException;
 import com.oocl.bootcampbackend.repository.TripRepository;
 import com.oocl.bootcampbackend.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -24,10 +25,14 @@ public class TripService {
     private UserRepository userRepository;
     @Transactional
     public void save(ItineraryRequest itineraryRequest) {
+        String phone = itineraryRequest.getPhone();
         // 1. 根据手机号查询用户（确保用户存在）
-        User user = userRepository.findByPhone(itineraryRequest.getPhone());
+        if (phone.isEmpty()){
+            throw new NullPhoneException();
+        }
+        User user = userRepository.findByPhone(phone);
         if (user == null) {
-            throw new RuntimeException("用户不存在，手机号：" + itineraryRequest.getPhone());
+            throw new NullPhoneException();
         }
 
         // 2. 遍历外层天数映射（day1、day2等）
