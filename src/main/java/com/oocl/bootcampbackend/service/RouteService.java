@@ -49,8 +49,10 @@ public class RouteService {
 
         List<List<Attraction>> route = new ArrayList<>();
         try {
-            logger.info("Request Body: " + requestBody);
-            String response = HttpService.sendPost(ROUTE_API_URL, requestBody.toString());
+            // Request body to json
+            String jsonRequestBody = mapper.writeValueAsString(requestBody);
+            logger.info("Request Body: " + jsonRequestBody);
+            String response = HttpService.sendPost(ROUTE_API_URL, jsonRequestBody);
             logger.info("Response: " + response);
             // Parse the response to json, read "order" field
             int[] order = mapper.readTree(response).get("order").traverse().readValueAs(int[].class);
