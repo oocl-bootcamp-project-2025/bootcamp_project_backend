@@ -52,6 +52,20 @@ public class TripControllerTest {
                 .andExpect(status().isCreated());
     }
 
+
+    @Test
+    public void should_throw_exception_when_post_given_nullPhone() throws Exception {
+        ItineraryRequest invalidRequest = createTestItineraryRequest();
+        invalidRequest.setPhone("");
+
+        mockMvc.perform(post("/trips")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidRequest)))
+                .andExpect(status().isBadRequest());
+    }
+
+
+
     private User createTestUser() {
         User user = new User();
         user.setPhone("13800138000");
