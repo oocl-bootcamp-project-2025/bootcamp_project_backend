@@ -2,7 +2,6 @@ package com.oocl.bootcampbackend.service;
 
 import com.oocl.bootcampbackend.controller.dto.ItineraryRequest;
 import com.oocl.bootcampbackend.controller.dto.TripDTO;
-import com.oocl.bootcampbackend.controller.dto.TripsDTO;
 import com.oocl.bootcampbackend.entity.Trip;
 import com.oocl.bootcampbackend.entity.User;
 import com.oocl.bootcampbackend.exception.NotExistingUserException;
