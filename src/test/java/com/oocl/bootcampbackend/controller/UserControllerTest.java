@@ -101,4 +101,20 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("phone already exists"));
     }
+
+    /**
+     * 测试场景：登录时手机号为空
+     * 预期结果：返回400 Bad Request
+     */
+    public void should_return_bad_request_when_login_given_empty_phone() throws Exception {
+        UserDTO invalidUser = new UserDTO();
+        invalidUser.setPhone("");
+        invalidUser.setPassword("Password123");
+        mockMvc.perform(post("/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidUser)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("phone cannot be empty"));
+    }
+
 }
