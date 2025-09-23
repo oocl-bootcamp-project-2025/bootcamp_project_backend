@@ -1,4 +1,4 @@
-name: Main Branch CI/CD to Prod
+name: Main Branch CI/CD to Dev
 
 on:
   push:
