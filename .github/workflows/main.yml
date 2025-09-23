@@ -37,7 +37,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Run tests
-        run: ./gradlew test
+        run: chmod +x ./gradlew test
 
       - name: Generate test report
         uses: dorny/test-reporter@v1
