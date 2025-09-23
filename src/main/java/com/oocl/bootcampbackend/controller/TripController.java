@@ -17,11 +17,11 @@ public class TripController
     private TripService tripService;
 
     @PostMapping("/trips")
-    public ResponseEntity<Void> saveTrips(@RequestBody TripDTO tripDTO){
+    public ResponseEntity<Void> saveTrips(@RequestBody TripDTO tripDTO, @RequestBody String phone){
         // 1. 转化成Trip列表
 
         // 2. 存进数据库
-        tripService.save(tripDTO);
+        tripService.save(tripDTO, phone);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
