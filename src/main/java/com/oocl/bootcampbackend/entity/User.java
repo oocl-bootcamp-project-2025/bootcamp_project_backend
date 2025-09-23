@@ -22,6 +22,8 @@ public class User {
 
     private String phone;
 
+    private String password;
+
     // 3. 核心：关联多个行程（一对多）
     @OneToMany(
             mappedBy = "user", // 指向行程端（Trip）的关联属性名“user”，表示由Trip维护外键
