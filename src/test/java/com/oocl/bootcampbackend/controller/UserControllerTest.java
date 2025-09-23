@@ -148,11 +148,17 @@ public class UserControllerTest {
         UserDTO validUser = new UserDTO();
         validUser.setPhone("13800138000");
         validUser.setPassword("Password123");
+        mockMvc.perform(post("/users/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validUser)))
+                .andExpect(status().isCreated());
         mockMvc.perform(post("/users/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validUser)))
                 .andExpect(status().isCreated());
     }
+
+
 
 
 }
