@@ -28,11 +28,11 @@ public class TripService {
         String phone = itineraryRequest.getPhone();
         // 1. 根据手机号查询用户（确保用户存在）
         if (phone.isEmpty()){
-            throw new NullPhoneException();
+            throw new NullPhoneException("phone is null");
         }
         User user = userRepository.findByPhone(phone);
         if (user == null) {
-            throw new NullPhoneException();
+            throw new RuntimeException();
         }
 
         // 2. 遍历外层天数映射（day1、day2等）
