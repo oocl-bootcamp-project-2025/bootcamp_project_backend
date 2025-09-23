@@ -83,7 +83,12 @@ public class TripControllerTest {
         trip1.setName("天安门广场");
         trip1.setLocation("北京");
         trip1.setDuration("2小时");
+        TripDTO trip12 = new TripDTO();
+        trip12.setName("天安门广场");
+        trip12.setLocation("北京");
+        trip12.setDuration("2小时");
         day1List.add(trip1);
+        day1List.add(trip12);
         day1Trips.setTrips(day1List);
         itineraryData.put("day1", day1Trips);
 
