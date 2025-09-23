@@ -66,4 +66,19 @@ public class UserControllerTest {
                         .content(objectMapper.writeValueAsString(invalidUser)))
                 .andExpect(status().isBadRequest());
     }
+    /**
+     * 测试场景：注册时密码无效
+     * 预期结果：返回400 Bad Request
+     */
+    @Test
+    public void should_return_bad_request_when_register_given_null_password() throws Exception {
+        UserDTO invalidUser = new UserDTO();
+        invalidUser.setPhone("13800138000");
+        invalidUser.setPassword("");
+
+        mockMvc.perform(post("/users/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidUser)))
+                .andExpect(status().isBadRequest());
+    }
 }
