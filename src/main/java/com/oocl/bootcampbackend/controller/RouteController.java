@@ -1,7 +1,6 @@
 package com.oocl.bootcampbackend.controller;
 
 import com.oocl.bootcampbackend.entity.Attraction;
-import com.oocl.bootcampbackend.model.Point;
 import com.oocl.bootcampbackend.service.RouteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

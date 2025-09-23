@@ -9,7 +9,8 @@ import com.oocl.bootcampbackend.repository.AttractionRepository;
 import com.oocl.bootcampbackend.repository.ViewpointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Attr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,8 @@ public class RouteService {
     private final int dailyAttractionCount = 3;
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final String ROUTE_API_URL = "https://sito-routeplanner.up.railway.app/api/tsp/solver/distance";
+    private static final Logger logger = LoggerFactory.getLogger(RouteService.class);
+
     @Autowired
     private ViewpointRepository viewpointRepository;
 
@@ -61,6 +64,7 @@ public class RouteService {
             return route;
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("Error in routePlanner: " + e.getMessage());
             return new ArrayList<>();
         }
     }
