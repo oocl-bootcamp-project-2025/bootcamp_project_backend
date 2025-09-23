@@ -25,24 +25,21 @@ public class TripService {
     private UserRepository userRepository;
     @Transactional
     public void save(ItineraryRequest itineraryRequest) {
-        String phone = itineraryRequest.getPhone();
-        if (phone.isEmpty()){
-            throw new NullPhoneException("phone is null");
+        String phoneNumber = itineraryRequest.getPhoneNumber();
+        if (phoneNumber == null || phoneNumber.isEmpty()){
+            throw new NullPhoneException("phoneNumber is null");
         }
-        User user = userRepository.findByPhone(phone);
+        User user = userRepository.findByPhone(phoneNumber);
         if (user == null) {
             throw new NotExistingUserException("user is not exist");
         }
 
-        Map<String, TripsDTO> itineraryData = itineraryRequest.getItineraryData();
-        for (Map.Entry<String, TripsDTO> dayEntry : itineraryData.entrySet()) {
+        Map<String, List<TripDTO>> itineraryData = itineraryRequest.getItineraryData();
+        for (Map.Entry<String, List<TripDTO>> dayEntry : itineraryData.entrySet()) {
             String dayKey = dayEntry.getKey();
-            TripsDTO tripsDTO = dayEntry.getValue();
-
-            List<TripDTO> tripDTOList = tripsDTO.getTrips();
+            List<TripDTO> tripDTOList = dayEntry.getValue();
             for (TripDTO tripDTO : tripDTOList) {
                 Trip trip = new Trip();
-
                 trip.setName(tripDTO.getName());
                 trip.setDescription(tripDTO.getDescription());
                 trip.setDuration(tripDTO.getDuration());
@@ -51,15 +48,12 @@ public class TripService {
                 trip.setImages(tripDTO.getImages());
                 trip.setExperts(tripDTO.getExperts());
                 trip.setStart(tripDTO.getStart());
-
                 trip.setDay(dayKey); // 关联到day1、day2等
                 trip.setUser(user); // 关联到当前用户
                 trip.setDone(false); // 默认未完成
-
-                // 5. 保存单个行程记录
                 tripRepository.save(trip);
-
                 user.getTrips().add(trip);
             }
-        }}
+        }
+    }
 }
