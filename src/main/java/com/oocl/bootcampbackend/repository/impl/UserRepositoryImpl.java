@@ -39,6 +39,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public String findPasswordByPhone(String phone) {
-        return userJpaRepository.findPasswordByPhone(phone);
+        User byPhone = userJpaRepository.findByPhone(phone);;
+        return byPhone.getPassword();
     }
 }

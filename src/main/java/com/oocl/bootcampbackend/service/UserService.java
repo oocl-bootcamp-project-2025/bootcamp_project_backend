@@ -20,13 +20,15 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public void login(UserDTO userDTO) {
-        if (!userRepository.isExistingPhone(userDTO.getPhone())) {
+        String phone = userDTO.getPhone();
+        String password = userDTO.getPassword();
+        if (!userRepository.isExistingPhone(phone))
+        {
             throw new NotExistingUserException("user not exists");
         }
-        if (!passwordEncoder.matches(userDTO.getPassword(), userRepository.findPasswordByPhone(userDTO.getPhone()))) { // 密码匹配
+        if (!passwordEncoder.matches(password, userRepository.findPasswordByPhone(phone))) {
             throw new ErrorPasswordException("password not match");
         }
-
     }
 
     public void register(UserDTO userDTO) {
