@@ -50,6 +50,8 @@ public class RouteService {
         List<List<Attraction>> route = new ArrayList<>();
         try {
             String response = HttpService.sendPost(ROUTE_API_URL, requestBody.toString());
+            logger.info(response);
+            // Parse the response to json, read "order" field
             int[] order = mapper.readTree(response).get("order").traverse().readValueAs(int[].class);
             for (int i = 0; i < days; i++) {
                 List<Attraction> dayRoute = new ArrayList<>();
