@@ -1,5 +1,6 @@
 package com.oocl.bootcampbackend.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oocl.bootcampbackend.entity.Attraction;
 import com.oocl.bootcampbackend.entity.Viewpoint;
