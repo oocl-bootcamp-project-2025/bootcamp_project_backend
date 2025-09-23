@@ -2,6 +2,7 @@ package com.oocl.bootcampbackend.service;
 
 import com.oocl.bootcampbackend.controller.dto.UserDTO;
 import com.oocl.bootcampbackend.entity.User;
+import com.oocl.bootcampbackend.exception.ExistingUserException;
 import com.oocl.bootcampbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +23,7 @@ public class UserService {
 
     public void register(UserDTO userDTO) {
         if (userRepository.isExistingPhone(userDTO.getPhone())) {
-            throw new RuntimeException("phone already exists");
+            throw new ExistingUserException("phone already exists");
         }
 
         // 密码加密：使用 BCrypt 加密原始密码
