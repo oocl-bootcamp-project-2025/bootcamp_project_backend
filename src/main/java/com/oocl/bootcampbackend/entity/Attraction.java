@@ -16,9 +16,7 @@ public class Attraction {
     private String location;
     private double longitude;
     private double latitude;
-    @Column(columnDefinition = "json")
-    @Convert(converter = StringListConverter.class)
-    private List<String> images;
+    private String images;
     // In hours
     private int duration;
 
@@ -78,11 +76,11 @@ public class Attraction {
         this.latitude = latitude;
     }
 
-    public List<String> getImages() {
+    public String getImages() {
         return images;
     }
 
-    public void setImages(List<String> images) {
+    public void setImages(String images) {
         this.images = images;
     }
 
