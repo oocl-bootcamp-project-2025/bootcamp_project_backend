@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,7 +29,7 @@ public class User {
             cascade = CascadeType.ALL, // 级联操作（可选，根据业务配置）：如保存用户时自动保存关联的行程
             orphanRemoval = true // 级联删除（可选）：删除用户时自动删除关联的行程（需谨慎使用）
     )
-    private List<Trip> trips; // 1个用户有多个行程，用List存储
+    private List<Trip> trips = new ArrayList<>(); // 1个用户有多个行程，用List存储
 
     public void setTrip(Trip trip){
         this.trips.add(trip);
