@@ -5,6 +5,7 @@ import com.oocl.bootcampbackend.controller.dto.TripDTO;
 import com.oocl.bootcampbackend.controller.dto.TripsDTO;
 import com.oocl.bootcampbackend.entity.Trip;
 import com.oocl.bootcampbackend.entity.User;
+import com.oocl.bootcampbackend.exception.NotExistingUserException;
 import com.oocl.bootcampbackend.exception.NullPhoneException;
 import com.oocl.bootcampbackend.repository.TripRepository;
 import com.oocl.bootcampbackend.repository.UserRepository;
@@ -30,7 +31,7 @@ public class TripService {
         }
         User user = userRepository.findByPhone(phone);
         if (user == null) {
-            throw new RuntimeException();
+            throw new NotExistingUserException("user is not exist");
         }
 
         Map<String, TripsDTO> itineraryData = itineraryRequest.getItineraryData();
