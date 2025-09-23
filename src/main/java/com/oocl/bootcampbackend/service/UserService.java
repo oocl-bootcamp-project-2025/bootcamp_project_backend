@@ -2,7 +2,9 @@ package com.oocl.bootcampbackend.service;
 
 import com.oocl.bootcampbackend.controller.dto.UserDTO;
 import com.oocl.bootcampbackend.entity.User;
+import com.oocl.bootcampbackend.exception.ErrorPasswordException;
 import com.oocl.bootcampbackend.exception.ExistingUserException;
+import com.oocl.bootcampbackend.exception.NotExistingUserException;
 import com.oocl.bootcampbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +20,12 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public void login(UserDTO userDTO) {
+        if (!userRepository.isExistingPhone(userDTO.getPhone())) {
+            throw new NotExistingUserException("user not exists");
+        }
+        if (!passwordEncoder.matches(userDTO.getPassword(), userRepository.findPasswordByPhone(userDTO.getPhone()))) { // 密码匹配
+            throw new ErrorPasswordException("password not match");
+        }
 
     }
 

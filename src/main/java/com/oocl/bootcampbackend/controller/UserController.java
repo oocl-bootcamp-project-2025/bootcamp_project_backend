@@ -18,7 +18,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/users/login")
-    public ResponseEntity<Void> loginUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<Void> loginUser(@RequestBody @Valid UserDTO userDTO){
         userService.login(userDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

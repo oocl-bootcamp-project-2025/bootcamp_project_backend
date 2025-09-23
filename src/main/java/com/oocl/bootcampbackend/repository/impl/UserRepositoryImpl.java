@@ -36,4 +36,9 @@ public class UserRepositoryImpl implements UserRepository {
     public boolean isExistingPhone(String phone) {
         return userJpaRepository.existsByPhone(phone);
     }
+
+    @Override
+    public String findPasswordByPhone(String phone) {
+        return userJpaRepository.findPasswordByPhone(phone);
+    }
 }

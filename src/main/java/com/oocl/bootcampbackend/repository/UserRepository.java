@@ -13,4 +13,5 @@ public interface UserRepository {
     public User findById(Long id);
     public void save(User user);
     public boolean isExistingPhone(String phone);
+    public String findPasswordByPhone(String phone);
 }
