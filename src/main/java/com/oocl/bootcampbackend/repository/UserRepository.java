@@ -12,4 +12,5 @@ public interface UserRepository {
     public List<User> findAll();
     public User findById(Long id);
     public void save(User user);
+    public boolean isExistingPhone(String phone);
 }
