@@ -136,7 +136,8 @@ public class UserControllerTest {
         mockMvc.perform(post("/users/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validUser)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("password not match"));
     }
 
     /**
@@ -157,7 +158,26 @@ public class UserControllerTest {
                         .content(objectMapper.writeValueAsString(validUser)))
                 .andExpect(status().isCreated());
     }
-
+    /**
+     * 测试场景： 登录时手机号不存在
+     * 预期结果：返回400 Bad Request
+     */
+    @Test
+    public void should_return_400_when_login_given_invalid_user() throws Exception {
+        UserDTO validUser = new UserDTO();
+        validUser.setPhone("13800138001");
+        validUser.setPassword("Password123");
+        mockMvc.perform(post("/users/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validUser)))
+                .andExpect(status().isCreated());
+        validUser.setPhone("13800138002");
+        mockMvc.perform(post("/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validUser)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("user not exists"));
+    }
 
 
 
