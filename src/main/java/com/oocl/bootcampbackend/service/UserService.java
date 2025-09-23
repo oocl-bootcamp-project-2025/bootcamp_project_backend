@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static com.oocl.bootcampbackend.util.JwtUtil.generateToken;
+
 @Service
 public class UserService {
     @Autowired
@@ -18,7 +20,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public void login(UserDTO userDTO) {
+    public String login(UserDTO userDTO) {
         String phone = userDTO.getPhone();
         String password = userDTO.getPassword();
         if (!userRepository.isExistingPhone(phone))
@@ -28,6 +30,8 @@ public class UserService {
         if (!passwordEncoder.matches(password, userRepository.findPasswordByPhone(phone))) {
             throw new ErrorPasswordException("password not match");
         }
+        // 登录成功，生成JWT token
+        return generateToken(phone);
     }
 
     public void register(UserDTO userDTO) {
