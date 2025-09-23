@@ -22,4 +22,9 @@ public class TripRepositoryImpl implements TripRepository {
     public List<Trip> findByUser(User user) {
         return tripJpaRepository.findByUser(user);
     }
+
+    @Override
+    public void save(Trip trip) {
+        tripJpaRepository.save(trip);
+    }
 }

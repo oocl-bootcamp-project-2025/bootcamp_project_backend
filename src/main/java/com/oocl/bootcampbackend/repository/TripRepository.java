@@ -11,4 +11,5 @@ import java.util.List;
 public interface TripRepository {
     public List<Trip> findAll();
     public List<Trip> findByUser(User user);
+    public void save(Trip trip);
 }
