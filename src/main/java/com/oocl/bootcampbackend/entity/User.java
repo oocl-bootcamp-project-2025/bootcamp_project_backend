@@ -1,10 +1,18 @@
 package com.oocl.bootcampbackend.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "user")
 public class User {
     @Id
@@ -21,30 +29,6 @@ public class User {
             orphanRemoval = true // 级联删除（可选）：删除用户时自动删除关联的行程（需谨慎使用）
     )
     private List<Trip> trips; // 1个用户有多个行程，用List存储
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public List<Trip> getTrips() {
-        return trips;
-    }
-
-    public void setTrips(List<Trip> trips) {
-        this.trips = trips;
-    }
 
     public void setTrip(Trip trip){
         this.trips.add(trip);
