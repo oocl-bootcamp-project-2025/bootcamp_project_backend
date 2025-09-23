@@ -1,5 +1,6 @@
 package com.oocl.bootcampbackend.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oocl.bootcampbackend.entity.Attraction;
 import com.oocl.bootcampbackend.entity.Viewpoint;
@@ -54,8 +55,14 @@ public class RouteService {
             logger.info("Request Body: " + jsonRequestBody);
             String response = HttpService.sendPost(ROUTE_API_URL, jsonRequestBody);
             logger.info("Response: " + response);
-            // Parse the response to json, read "order" field
-            int[] order = mapper.readTree(response).get("order").traverse().readValueAs(int[].class);
+            JsonNode orderNode = mapper.readTree(response).get("order");
+            int[] order = new int[0];
+            if (orderNode != null && orderNode.isArray()) {
+                order = new int[orderNode.size()];
+                for (int i = 0; i < orderNode.size(); i++) {
+                    order[i] = orderNode.get(i).asInt();
+                }
+            }
             for (int i = 0; i < days; i++) {
                 List<Attraction> dayRoute = new ArrayList<>();
                 for (int j = 0; j < dailyAttractionCount; j++) {
