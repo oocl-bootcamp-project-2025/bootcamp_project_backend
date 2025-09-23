@@ -16,6 +16,8 @@ public class Attraction {
     private String location;
     private double longitude;
     private double latitude;
+    @Column(columnDefinition = "json")
+    @Convert(converter = StringListConverter.class)
     private List<String> images;
     // In hours
     private int duration;
