@@ -1,19 +1,15 @@
 package com.oocl.bootcampbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oocl.bootcampbackend.controller.TripController;
 import com.oocl.bootcampbackend.controller.dto.ItineraryRequest;
 import com.oocl.bootcampbackend.controller.dto.TripDTO;
 import com.oocl.bootcampbackend.controller.dto.TripsDTO;
 import com.oocl.bootcampbackend.entity.User;
 import com.oocl.bootcampbackend.repository.UserRepository;
-import com.oocl.bootcampbackend.service.TripService;
-import com.oocl.bootcampbackend.service.UserService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,8 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

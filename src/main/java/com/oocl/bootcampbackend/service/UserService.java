@@ -15,7 +15,6 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    // 注入配置好的 BCrypt 密码编码器
     @Autowired
     private PasswordEncoder passwordEncoder;
 

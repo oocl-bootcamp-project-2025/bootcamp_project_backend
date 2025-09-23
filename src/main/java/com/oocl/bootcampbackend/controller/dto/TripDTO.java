@@ -1,8 +1,5 @@
 package com.oocl.bootcampbackend.controller.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-
 
 public class TripDTO {
     private String name;

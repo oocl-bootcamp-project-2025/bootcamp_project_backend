@@ -1,9 +1,5 @@
 package com.oocl.bootcampbackend.controller.dto;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.HashMap;
 import java.util.Map;
 public class ItineraryRequest {

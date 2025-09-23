@@ -1,9 +1,6 @@
 package com.oocl.bootcampbackend.controller;
 
 import com.oocl.bootcampbackend.controller.dto.ItineraryRequest;
-import com.oocl.bootcampbackend.controller.dto.TripDTO;
-import com.oocl.bootcampbackend.controller.dto.TripsDTO;
-import com.oocl.bootcampbackend.entity.Trip;
 import com.oocl.bootcampbackend.service.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

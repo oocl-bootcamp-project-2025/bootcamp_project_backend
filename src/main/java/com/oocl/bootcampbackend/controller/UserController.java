@@ -1,7 +1,6 @@
 package com.oocl.bootcampbackend.controller;
 
 import com.oocl.bootcampbackend.controller.dto.UserDTO;
-import com.oocl.bootcampbackend.entity.User;
 import com.oocl.bootcampbackend.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController

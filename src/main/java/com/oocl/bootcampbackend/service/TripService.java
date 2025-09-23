@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-import static org.hibernate.internal.util.collections.ArrayHelper.forEach;
 
 @Service
 public class TripService {
@@ -26,7 +25,6 @@ public class TripService {
     @Transactional
     public void save(ItineraryRequest itineraryRequest) {
         String phone = itineraryRequest.getPhone();
-        // 1. 根据手机号查询用户（确保用户存在）
         if (phone.isEmpty()){
             throw new NullPhoneException("phone is null");
         }
@@ -35,19 +33,15 @@ public class TripService {
             throw new RuntimeException();
         }
 
-        // 2. 遍历外层天数映射（day1、day2等）
         Map<String, TripsDTO> itineraryData = itineraryRequest.getItineraryData();
         for (Map.Entry<String, TripsDTO> dayEntry : itineraryData.entrySet()) {
-            String dayKey = dayEntry.getKey(); // 天数标识（day1、day2...）
-            TripsDTO tripsDTO = dayEntry.getValue(); // 该天的行程集合
+            String dayKey = dayEntry.getKey();
+            TripsDTO tripsDTO = dayEntry.getValue();
 
-            // 3. 遍历当天的所有具体行程（TripDTO列表）
             List<TripDTO> tripDTOList = tripsDTO.getTrips();
             for (TripDTO tripDTO : tripDTOList) {
-                // 4. 创建Trip实体并设置属性
                 Trip trip = new Trip();
 
-                // 4.1 设置从TripDTO来的字段
                 trip.setName(tripDTO.getName());
                 trip.setDescription(tripDTO.getDescription());
                 trip.setDuration(tripDTO.getDuration());
@@ -57,7 +51,6 @@ public class TripService {
                 trip.setExperts(tripDTO.getExperts());
                 trip.setStart(tripDTO.getStart());
 
-                // 4.2 设置天数和关联用户
                 trip.setDay(dayKey); // 关联到day1、day2等
                 trip.setUser(user); // 关联到当前用户
                 trip.setDone(false); // 默认未完成

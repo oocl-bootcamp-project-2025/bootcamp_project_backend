@@ -3,7 +3,6 @@ package com.oocl.bootcampbackend.repository;
 import com.oocl.bootcampbackend.entity.Trip;
 import com.oocl.bootcampbackend.entity.User;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
