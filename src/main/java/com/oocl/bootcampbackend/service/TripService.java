@@ -24,11 +24,11 @@ public class TripService {
     private UserRepository userRepository;
     @Transactional
     public void save(ItineraryRequest itineraryRequest) {
-        String phoneNumber = itineraryRequest.getPhoneNumber();
-        if (phoneNumber == null || phoneNumber.isEmpty()){
-            throw new NullPhoneException("phoneNumber is null");
+        String phone = itineraryRequest.getPhoneNumber();
+        if (phone == null || phone.isEmpty()){
+            throw new NullPhoneException("phone is null");
         }
-        User user = userRepository.findByPhone(phoneNumber);
+        User user = userRepository.findByPhone(phone);
         if (user == null) {
             throw new NotExistingUserException("user is not exist");
         }
@@ -39,13 +39,14 @@ public class TripService {
             List<TripDTO> tripDTOList = dayEntry.getValue();
             for (TripDTO tripDTO : tripDTOList) {
                 Trip trip = new Trip();
+                // trip.setId(tripDTO.getId()); // id由数据库自增
                 trip.setName(tripDTO.getName());
                 trip.setDescription(tripDTO.getDescription());
                 trip.setDuration(tripDTO.getDuration());
                 trip.setTime(tripDTO.getTime());
                 trip.setLocation(tripDTO.getLocation());
-                trip.setImages(tripDTO.getImages());
-                trip.setExperts(tripDTO.getExperts());
+                trip.setImages(String.join(",", tripDTO.getImages()));
+                trip.setExperts(String.join(",", tripDTO.getExperts()));
                 trip.setStart(tripDTO.getStart());
                 trip.setDay(dayKey); // 关联到day1、day2等
                 trip.setUser(user); // 关联到当前用户
