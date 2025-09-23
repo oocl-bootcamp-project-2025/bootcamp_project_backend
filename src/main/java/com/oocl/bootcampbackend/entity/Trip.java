@@ -8,6 +8,8 @@ public class Trip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
+
 
     // 3. 核心：关联User表的外键配置
     @ManyToOne(fetch = FetchType.LAZY) // fetch=LAZY：延迟加载（避免查询行程时自动查用户，优化性能）
