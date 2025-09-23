@@ -117,4 +117,42 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    /**
+     * 测试场景： 登录时密码不匹配
+     * 预期结果：返回400 Bad Request
+     */
+    @Test
+    public void should_return_bad_request_when_login_given_wrong_password() throws Exception {
+        UserDTO validUser = new UserDTO();
+        validUser.setPhone("13800138000");
+        validUser.setPassword("Password123");
+
+        mockMvc.perform(post("/users/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validUser)))
+                .andExpect(status().isCreated());
+
+        validUser.setPassword("WrongPassword");
+        mockMvc.perform(post("/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validUser)))
+                .andExpect(status().isBadRequest());
+    }
+
+    /**
+     * 测试场景： 正常登录
+     * 预期结果：返回201
+     */
+    @Test
+    public void should_return_201_when_login_given_valid_user() throws Exception {
+        UserDTO validUser = new UserDTO();
+        validUser.setPhone("13800138000");
+        validUser.setPassword("Password123");
+        mockMvc.perform(post("/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validUser)))
+                .andExpect(status().isCreated());
+    }
+
+
 }
