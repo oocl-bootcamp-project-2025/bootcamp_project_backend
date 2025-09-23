@@ -64,6 +64,8 @@ public class TripService {
 
                 // 5. 保存单个行程记录
                 tripRepository.save(trip);
+
+                user.getTrips().add(trip);
             }
         }}
 }
