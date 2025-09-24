@@ -8,7 +8,7 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "trip")
+@Table(name = "\"trip\"")
 public class Trip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
