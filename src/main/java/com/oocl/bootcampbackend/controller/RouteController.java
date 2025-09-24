@@ -22,7 +22,7 @@ public class RouteController {
             @RequestParam("preference") List<Integer> preference,
             @RequestParam("days") int days
     ) {
-        return routeService.routePlanner(
+        return routeService.itineraryPlanner(
                 area,
                 preference.stream().mapToInt(i -> i).toArray(),
                 days

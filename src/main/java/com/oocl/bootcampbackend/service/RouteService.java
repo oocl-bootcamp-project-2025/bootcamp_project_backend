@@ -2,6 +2,7 @@ package com.oocl.bootcampbackend.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oocl.bootcampbackend.controller.dto.OptimizedRouteDTO;
 import com.oocl.bootcampbackend.entity.Attraction;
 import com.oocl.bootcampbackend.entity.Viewpoint;
 import com.oocl.bootcampbackend.model.Point;
@@ -15,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class RouteService {
@@ -39,7 +39,7 @@ public class RouteService {
                 .toList();
     }
 
-    public List<List<Attraction>> routePlanner(String area, int[] preference, int days) {
+    private List<List<Attraction>> itineraryPlanner(String area, int[] preference, int days) {
         List<Viewpoint> viewpoints = viewpointRepository.findViewPointsByPreference(preference);
         List<Attraction> attractions = getAttractions(viewpoints).stream().limit((long) days * dailyAttractionCount).toList();
 
@@ -48,7 +48,7 @@ public class RouteService {
                 .toList();
         RouteRequestBody requestBody = new RouteRequestBody(points, 1);
 
-        List<List<Attraction>> route = new ArrayList<>();
+        List<List<Attraction>> itinerary = new ArrayList<>();
         try {
             // Request body to json
             String jsonRequestBody = mapper.writeValueAsString(requestBody);
@@ -71,13 +71,15 @@ public class RouteService {
                         dayRoute.add(attractions.get(order[index]));
                     }
                 }
-                route.add(dayRoute);
+                itinerary.add(dayRoute);
             }
-            return route;
+            return itinerary;
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("Error in routePlanner: " + e.getMessage());
+            logger.error("Error in routePlanner: {}", e.getMessage());
             return new ArrayList<>();
         }
     }
+
+    public OptimizedRouteDTO routePlanner
 }
