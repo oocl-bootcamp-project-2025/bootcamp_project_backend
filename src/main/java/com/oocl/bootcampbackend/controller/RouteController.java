@@ -1,5 +1,6 @@
 package com.oocl.bootcampbackend.controller;
 
+import com.oocl.bootcampbackend.controller.dto.OptimizedRouteDTO;
 import com.oocl.bootcampbackend.entity.Attraction;
 import com.oocl.bootcampbackend.service.RouteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,12 @@ public class RouteController {
     private RouteService routeService;
 
     @GetMapping("/planner")
-    public List<List<Attraction>> routePlanner(
+    public OptimizedRouteDTO routePlanner(
             @RequestParam("area") String area,
             @RequestParam("preference") List<Integer> preference,
             @RequestParam("days") int days
     ) {
-        return routeService.itineraryPlanner(
+        return routeService.routePlanner(
                 area,
                 preference.stream().mapToInt(i -> i).toArray(),
                 days

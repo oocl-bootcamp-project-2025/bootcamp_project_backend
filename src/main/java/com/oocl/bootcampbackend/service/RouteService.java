@@ -1,8 +1,10 @@
 package com.oocl.bootcampbackend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oocl.bootcampbackend.controller.dto.OptimizedRouteDTO;
+import com.oocl.bootcampbackend.controller.dto.RouteDTO;
 import com.oocl.bootcampbackend.entity.Attraction;
 import com.oocl.bootcampbackend.entity.Viewpoint;
 import com.oocl.bootcampbackend.model.Point;
@@ -21,7 +23,8 @@ import java.util.List;
 public class RouteService {
     private final int dailyAttractionCount = 3;
     private static final ObjectMapper mapper = new ObjectMapper();
-    private static final String ROUTE_API_URL = "https://sito-routeplanner.up.railway.app/api/tsp/solver/distance";
+    private static final String ITINERARY_API_URL = "https://sito-routeplanner.up.railway.app/api/tsp/solver/distance";
+    private static final String ROUTE_API_URL = "https://sito-routeplanner.up.railway.app/api/routePlanner";
     private static final Logger logger = LoggerFactory.getLogger(RouteService.class);
 
     @Autowired
@@ -39,7 +42,7 @@ public class RouteService {
                 .toList();
     }
 
-    private List<List<Attraction>> itineraryPlanner(String area, int[] preference, int days) {
+    private List<List<Attraction>> itineraryPlanner(int[] preference, int days) {
         List<Viewpoint> viewpoints = viewpointRepository.findViewPointsByPreference(preference);
         List<Attraction> attractions = getAttractions(viewpoints).stream().limit((long) days * dailyAttractionCount).toList();
 
@@ -53,7 +56,7 @@ public class RouteService {
             // Request body to json
             String jsonRequestBody = mapper.writeValueAsString(requestBody);
             logger.debug("Request Body: " + jsonRequestBody);
-            String response = HttpService.sendPost(ROUTE_API_URL, jsonRequestBody);
+            String response = HttpService.sendPost(ITINERARY_API_URL, jsonRequestBody);
             logger.debug("Response: " + response);
             JsonNode orderNode = mapper.readTree(response).get("order");
             int[] order = new int[0];
@@ -81,5 +84,36 @@ public class RouteService {
         }
     }
 
-    public OptimizedRouteDTO routePlanner
+    private List<Point> getPointsFromItinerary(List<List<Attraction>> itinerary) {
+        List<Point> points = new ArrayList<>();
+        for (List<Attraction> day : itinerary) {
+            for (Attraction attraction : day) {
+                points.add(new Point(attraction.getLongitude(), attraction.getLatitude()));
+            }
+        }
+        return points;
+    }
+
+    public OptimizedRouteDTO routePlanner(String area, int[] preference, int days) {
+        List<List<Attraction>> itinerary = itineraryPlanner(preference, days);
+        List<Point> points = getPointsFromItinerary(itinerary);
+        RouteRequestBody requestBody = new RouteRequestBody(points, 1);
+        String response;
+        try {
+            String jsonRequestBody = mapper.writeValueAsString(requestBody);
+            logger.debug("Request Body: " + jsonRequestBody);
+            response = HttpService.sendPost(ROUTE_API_URL, jsonRequestBody);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            JsonNode routeNode = mapper.readTree(response);
+            OptimizedRouteDTO optimizedRouteDTO = new OptimizedRouteDTO(itinerary, mapper.treeToValue(routeNode, RouteDTO.class));
+            logger.info("OptimizedRouteDTO: {}", mapper.writeValueAsString(optimizedRouteDTO));
+            return optimizedRouteDTO;
+        } catch (Exception e) {
+            logger.error("Error in routePlanner: {}", e.getMessage());
+            return null;
+        }
+    }
 }
