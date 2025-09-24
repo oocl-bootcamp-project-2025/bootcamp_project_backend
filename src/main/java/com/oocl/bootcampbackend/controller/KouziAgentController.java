@@ -39,9 +39,7 @@ public class KouziAgentController {
         String botId = request.getOrDefault("botId", "7553289476660428840");
         String userId = request.getOrDefault("userId", "1");
         String content = request.getOrDefault("content", "");
-        String result = kouziAgentService.streamChatWithCozeAndCollectContent(botId, userId, content);
-        Map<String, Object> stringObjectMap = kouziAgentService.parseAndMergeJsonObjectsForAgentV1(result);
-        return ResponseEntity.ok(stringObjectMap);
+        return ResponseEntity.ok(kouziAgentService.getItineraryFromKouziAgent(botId, userId, content));
     }
 
     @PostMapping("/streamCollectV2")
@@ -49,9 +47,7 @@ public class KouziAgentController {
         String botId = request.getOrDefault("botId", "7553644953184780303");
         String userId = request.getOrDefault("userId", "1");
         String content = request.getOrDefault("content", "");
-        String result = kouziAgentService.streamChatWithCozeAndCollectContent(botId, userId, content);
-        List<Attraction> attractions = kouziAgentService.parseJsonToAttractionListForAgentV2(result);
-        return ResponseEntity.ok(attractions);
+        return ResponseEntity.ok(kouziAgentService.getAttractionsFromKouziAgent(botId, userId, content));
     }
 }
 

@@ -161,4 +161,24 @@ public class KouziAgentService {
         }
         return attractions;
     }
+
+    public List<Attraction> getAttractionsFromKouziAgent(String botId, String userId, String prompt) {
+        try {
+            String result = streamChatWithCozeAndCollectContent(botId, userId, prompt);
+            return parseJsonToAttractionListForAgentV2(result);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    public Map<String, Object> getItineraryFromKouziAgent(String botId, String userId, String prompt) {
+        try {
+            String result = streamChatWithCozeAndCollectContent(botId, userId, prompt);
+            return parseAndMergeJsonObjectsForAgentV1(result);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Collections.emptyMap();
+        }
+    }
 }
