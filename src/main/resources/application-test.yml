@@ -6,7 +6,7 @@ spring:
     password: ${H2_PASSWORD:} # replace or provide env H2_PASSWORD
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
   h2:
     console:
       enabled: true
