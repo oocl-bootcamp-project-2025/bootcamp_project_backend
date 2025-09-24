@@ -43,7 +43,7 @@ jobs:
       - name: Run tests
         run: ./gradlew test --debug
         env:
-
+          VENDOR: h2
           MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
           MYSQL_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -85,8 +85,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
       - name: Build application
         run: ./gradlew build -x test
+        env:
+          VENDOR: mysql
 
 
       - name: Install Railway CLI
