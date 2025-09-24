@@ -17,7 +17,6 @@ public class Attraction {
     private double longitude;
     private double latitude;
     private String images;
-    // In hours
     private int duration;
 
     public String getDescription() {

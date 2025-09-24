@@ -39,7 +39,7 @@ public class RouteService {
                 .toList();
     }
 
-    public List<List<Attraction>> routePlanner(int[] preference, int days) {
+    public List<List<Attraction>> routePlanner(String area, int[] preference, int days) {
         List<Viewpoint> viewpoints = viewpointRepository.findViewPointsByPreference(preference);
         List<Attraction> attractions = getAttractions(viewpoints).stream().limit((long) days * dailyAttractionCount).toList();
 
@@ -52,9 +52,9 @@ public class RouteService {
         try {
             // Request body to json
             String jsonRequestBody = mapper.writeValueAsString(requestBody);
-            logger.info("Request Body: " + jsonRequestBody);
+            logger.debug("Request Body: " + jsonRequestBody);
             String response = HttpService.sendPost(ROUTE_API_URL, jsonRequestBody);
-            logger.info("Response: " + response);
+            logger.debug("Response: " + response);
             JsonNode orderNode = mapper.readTree(response).get("order");
             int[] order = new int[0];
             if (orderNode != null && orderNode.isArray()) {
