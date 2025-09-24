@@ -8,7 +8,7 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "\"trip\"")
+@Table(name = "trip")
 public class Trip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +21,7 @@ public class Trip {
     private String images;
     private String experts;
     private String start;
+    @Column(name = "trip_day")
     private String day;
     private Boolean isDone;
 
