@@ -109,7 +109,12 @@ public class RouteService {
             JsonNode routeNode = mapper.readTree(response);
             logger.info("Route Response: {}", mapper.writeValueAsString(routeNode));
             List<PathDTO> paths = new ArrayList<>();
-            for (JsonNode path : routeNode.get("paths")) {
+            JsonNode pathsNode = routeNode.get("route").get("paths");
+            if (pathsNode == null || !pathsNode.isArray()) {
+                throw new JsonProcessingException("Invalid paths data") {
+                };
+            }
+            for (JsonNode path : pathsNode) {
                 String duration = path.get("cost").get("duration").asText();
                 String tolls = path.get("cost").get("tolls").asText();
                 String toll_distance = path.get("cost").get("toll_distance").asText();
