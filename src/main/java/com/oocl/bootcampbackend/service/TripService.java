@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -39,7 +40,6 @@ public class TripService {
             List<TripDTO> tripDTOList = dayEntry.getValue();
             for (TripDTO tripDTO : tripDTOList) {
                 Trip trip = new Trip();
-                // trip.setId(tripDTO.getId()); // id由数据库自增
                 trip.setName(tripDTO.getName());
                 trip.setDescription(tripDTO.getDescription());
                 trip.setDuration(tripDTO.getDuration());
@@ -55,5 +55,23 @@ public class TripService {
                 user.getTrips().add(trip);
             }
         }
+    }
+
+    public List<TripDTO> findAll() {
+        // 将Trip转为TripDTO并转为列表
+
+        return tripRepository.findAll().stream().map(trip -> {
+            TripDTO tripDTO = new TripDTO();
+            tripDTO.setName(trip.getName());
+            tripDTO.setDescription(trip.getDescription());
+            tripDTO.setDuration(trip.getDuration());
+            tripDTO.setTime(trip.getTime());
+            tripDTO.setLocation(trip.getLocation());
+            tripDTO.setImages(trip.getImages() != null ? List.of(trip.getImages().split(",")) : List.of());
+            tripDTO.setExperts(trip.getExperts()!=null ? List.of(trip.getExperts().split(",")) : List.of());
+            tripDTO.setStart(trip.getStart());
+            tripDTO.setDay(trip.getDay());
+            return tripDTO;
+        }).collect(Collectors.toList());
     }
 }
