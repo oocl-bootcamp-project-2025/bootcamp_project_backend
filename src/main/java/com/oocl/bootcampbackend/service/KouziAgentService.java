@@ -2,6 +2,7 @@ package com.oocl.bootcampbackend.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oocl.bootcampbackend.entity.Attraction;
 import okhttp3.*;
 import okhttp3.MediaType;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,9 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 @Service
@@ -24,19 +23,6 @@ public class KouziAgentService {
     private String kouziApiKey;
 
     private final RestTemplate restTemplate = new RestTemplate();
-
-    public String sendMessage(String message) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
-        if (kouziApiKey != null && !kouziApiKey.isEmpty()) {
-            headers.set("Authorization", "Bearer " + kouziApiKey);
-        }
-        Map<String, Object> body = new HashMap<>();
-        body.put("message", message);
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-        ResponseEntity<String> response = restTemplate.postForEntity(kouziApiUrl, request, String.class);
-        return response.getBody();
-    }
 
     /**
      * 使用OkHttp流式请求Coze智能体API，逐步返回数据
@@ -106,7 +92,7 @@ public class KouziAgentService {
     /**
      * 将多个拼接的JSON对象字符串合并为一个Map（如{"day1": [...] }{"day1": [...] }）
      */
-    public Map<String, Object> parseAndMergeJsonObjects(String result) {
+    public Map<String, Object> parseAndMergeJsonObjectsForAgentV1(String result) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> merged = new HashMap<>();
         // 用正则分割，提取每个JSON对象
@@ -134,4 +120,45 @@ public class KouziAgentService {
         }
         return merged;
     }
+
+    /**
+     * 解析JSON数组字符串并返回Attraction对象列表
+     */
+    public List<Attraction> parseJsonToAttractionListForAgentV2(String result) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Attraction> attractions = new ArrayList<>();
+        try {
+            Attraction[] attractionArray = objectMapper.readValue(result, Attraction[].class);
+            attractions.addAll(Arrays.asList(attractionArray));
+        } catch (Exception e) {
+            // 如果解析失败，尝试作为JsonNode处理
+            try {
+                JsonNode jsonArray = objectMapper.readTree(result);
+                if (jsonArray.isArray()) {
+                    for (JsonNode item : jsonArray) {
+                        Attraction attraction = new Attraction();
+                        if (item.has("area")) attraction.setArea(item.get("area").asText());
+                        if (item.has("name")) attraction.setName(item.get("name").asText());
+                        if (item.has("description")) attraction.setDescription(item.get("description").asText());
+                        if (item.has("location")) attraction.setLocation(item.get("location").asText());
+                        if (item.has("longitude")) attraction.setLongitude(Double.parseDouble(item.get("longitude").asText()));
+                        if (item.has("latitude")) attraction.setLatitude(Double.parseDouble(item.get("latitude").asText()));
+                        if (item.has("duration")) {
+                            try {
+                                attraction.setDuration((int) Double.parseDouble(item.get("duration").asText()));
+                            } catch (Exception ex) {
+                                attraction.setDuration(0);
+                            }
+                        }
+                        if (item.has("images")) attraction.setImages(item.get("images").asText());
+                        attractions.add(attraction);
+                    }
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return attractions;
+    }
 }
+

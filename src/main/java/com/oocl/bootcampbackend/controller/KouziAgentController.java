@@ -1,14 +1,15 @@
 package com.oocl.bootcampbackend.controller;
 
+import com.oocl.bootcampbackend.entity.Attraction;
 import com.oocl.bootcampbackend.service.KouziAgentService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -16,14 +17,6 @@ import java.util.Map;
 public class KouziAgentController {
     @Autowired
     private KouziAgentService kouziAgentService;
-
-    // 普通对话接口
-    @PostMapping("/chat")
-    public ResponseEntity<?> chat(@RequestBody Map<String, String> request) {
-        String message = request.getOrDefault("message", "");
-        String result = kouziAgentService.sendMessage(message);
-        return ResponseEntity.ok(Map.of("result", result));
-    }
 
     // 流式对话接口
     @PostMapping(value = "/streamChat")
@@ -47,8 +40,18 @@ public class KouziAgentController {
         String userId = request.getOrDefault("userId", "1");
         String content = request.getOrDefault("content", "");
         String result = kouziAgentService.streamChatWithCozeAndCollectContent(botId, userId, content);
-        Map<String, Object> stringObjectMap = kouziAgentService.parseAndMergeJsonObjects(result);
+        Map<String, Object> stringObjectMap = kouziAgentService.parseAndMergeJsonObjectsForAgentV1(result);
         return ResponseEntity.ok(stringObjectMap);
+    }
+
+    @PostMapping("/streamCollectV2")
+    public ResponseEntity<?> chatAndCollectV2(@RequestBody Map<String, String> request) throws IOException {
+        String botId = request.getOrDefault("botId", "7553644953184780303");
+        String userId = request.getOrDefault("userId", "1");
+        String content = request.getOrDefault("content", "");
+        String result = kouziAgentService.streamChatWithCozeAndCollectContent(botId, userId, content);
+        List<Attraction> attractions = kouziAgentService.parseJsonToAttractionListForAgentV2(result);
+        return ResponseEntity.ok(attractions);
     }
 }
 
