@@ -43,6 +43,7 @@ jobs:
       - name: Run tests
         run: ./gradlew test --debug
         env:
+
           MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
           MYSQL_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -86,6 +87,7 @@ jobs:
 
       - name: Build application
         run: ./gradlew build -x test
+
 
       - name: Install Railway CLI
         if: github.event_name != 'pull_request'
