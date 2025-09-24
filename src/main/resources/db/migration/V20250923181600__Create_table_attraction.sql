@@ -1,4 +1,4 @@
-create table attraction (
+create table if not exists attraction (
     id BIGINT auto_increment primary key,
     area nvarchar(255) null,
     name nvarchar(255) null,

@@ -7,3 +7,11 @@ logging:
     org.springframework.web: INFO
   pattern:
     console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+kouzi:
+  api:
+    url: https://api.coze.cn/v3/chat?
+    key: pat_YYDHIzVdqWVzwbLS3HlZITrMHJtEGI2SVOGNqp5gkWDc6GxF7O6KYM90zE4we10p
+gaode:
+  api:
+    key: 4ef53442f20206b88a091ed644de9025
