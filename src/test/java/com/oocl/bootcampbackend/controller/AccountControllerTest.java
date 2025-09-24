@@ -1,7 +1,7 @@
 package com.oocl.bootcampbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oocl.bootcampbackend.controller.dto.UserDTO;
+import com.oocl.bootcampbackend.controller.dto.AccountDTO;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class UserControllerTest {
+public class AccountControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -29,11 +29,11 @@ public class UserControllerTest {
      */
     @Test
     public void should_return_success_when_register_given_validate_user() throws Exception {
-        UserDTO validUser = new UserDTO();
+        AccountDTO validUser = new AccountDTO();
         validUser.setPhone("13800138000");
         validUser.setPassword("Password123");
 
-        mockMvc.perform(post("/users/register")
+        mockMvc.perform(post("/accounts/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validUser)))
                 .andExpect(status().isCreated());
@@ -44,11 +44,11 @@ public class UserControllerTest {
      */
     @Test
     public void should_return_bad_request_when_register_given_null_phone() throws Exception {
-        UserDTO invalidUser = new UserDTO();
+        AccountDTO invalidUser = new AccountDTO();
         invalidUser.setPhone("");
         invalidUser.setPassword("Password123");
 
-        mockMvc.perform(post("/users/register")
+        mockMvc.perform(post("/accounts/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidUser)))
                 .andExpect(status().isBadRequest());
@@ -59,11 +59,11 @@ public class UserControllerTest {
      */
     @Test
     public void should_return_bad_request_when_register_given_null_password() throws Exception {
-        UserDTO invalidUser = new UserDTO();
+        AccountDTO invalidUser = new AccountDTO();
         invalidUser.setPhone("13800138000");
         invalidUser.setPassword("");
 
-        mockMvc.perform(post("/users/register")
+        mockMvc.perform(post("/accounts/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidUser)))
                 .andExpect(status().isBadRequest());
@@ -74,15 +74,15 @@ public class UserControllerTest {
      */
     @Test
     public void should_return_bad_request_when_register_given_existing_phone() throws Exception {
-        UserDTO invalidUser = new UserDTO();
+        AccountDTO invalidUser = new AccountDTO();
         invalidUser.setPhone("13800138000");
         invalidUser.setPassword("Password123");
 
-        mockMvc.perform(post("/users/register")
+        mockMvc.perform(post("/accounts/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidUser)))
                 .andExpect(status().isCreated());
-        mockMvc.perform(post("/users/register")
+        mockMvc.perform(post("/accounts/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidUser)))
                 .andExpect(status().isBadRequest())
@@ -95,10 +95,10 @@ public class UserControllerTest {
      */
     @Test
     public void should_return_bad_request_when_login_given_empty_phone() throws Exception {
-        UserDTO invalidUser = new UserDTO();
+        AccountDTO invalidUser = new AccountDTO();
         invalidUser.setPhone("");
         invalidUser.setPassword("Password123");
-        mockMvc.perform(post("/users/login")
+        mockMvc.perform(post("/accounts/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidUser)))
                 .andExpect(status().isBadRequest());
@@ -110,17 +110,17 @@ public class UserControllerTest {
      */
     @Test
     public void should_return_bad_request_when_login_given_wrong_password() throws Exception {
-        UserDTO validUser = new UserDTO();
+        AccountDTO validUser = new AccountDTO();
         validUser.setPhone("13800138000");
         validUser.setPassword("Password123");
 
-        mockMvc.perform(post("/users/register")
+        mockMvc.perform(post("/accounts/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validUser)))
                 .andExpect(status().isCreated());
 
         validUser.setPassword("WrongPassword");
-        mockMvc.perform(post("/users/login")
+        mockMvc.perform(post("/accounts/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validUser)))
                 .andExpect(status().isBadRequest())
@@ -133,14 +133,14 @@ public class UserControllerTest {
      */
     @Test
     public void should_return_201_when_login_given_valid_user() throws Exception {
-        UserDTO validUser = new UserDTO();
+        AccountDTO validUser = new AccountDTO();
         validUser.setPhone("13800138000");
         validUser.setPassword("Password123");
-        mockMvc.perform(post("/users/register")
+        mockMvc.perform(post("/accounts/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validUser)))
                 .andExpect(status().isCreated());
-        mockMvc.perform(post("/users/login")
+        mockMvc.perform(post("/accounts/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validUser)))
                 .andExpect(status().isCreated());
@@ -151,15 +151,15 @@ public class UserControllerTest {
      */
     @Test
     public void should_return_400_when_login_given_invalid_user() throws Exception {
-        UserDTO validUser = new UserDTO();
+        AccountDTO validUser = new AccountDTO();
         validUser.setPhone("13800138001");
         validUser.setPassword("Password123");
-        mockMvc.perform(post("/users/register")
+        mockMvc.perform(post("/accounts/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validUser)))
                 .andExpect(status().isCreated());
         validUser.setPhone("13800138002");
-        mockMvc.perform(post("/users/login")
+        mockMvc.perform(post("/accounts/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validUser)))
                 .andExpect(status().isNotFound())

@@ -3,8 +3,8 @@ package com.oocl.bootcampbackend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oocl.bootcampbackend.controller.dto.ItineraryRequest;
 import com.oocl.bootcampbackend.controller.dto.TripDTO;
-import com.oocl.bootcampbackend.entity.User;
-import com.oocl.bootcampbackend.repository.UserRepository;
+import com.oocl.bootcampbackend.entity.Account;
+import com.oocl.bootcampbackend.repository.AccountRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +32,13 @@ public class TripControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private UserRepository userRepository;
+    private AccountRepository accountRepository;
 
     @Test
     public void should_return_success_when_post_given_trips_day_phone() throws Exception {
         ItineraryRequest request = createTestItineraryRequest();
 
-        userRepository.save(createTestUser());
+        accountRepository.save(createTestUser());
 
         mockMvc.perform(post("/trips")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -61,11 +61,11 @@ public class TripControllerTest {
 
 
 
-    private User createTestUser() {
-        User user = new User();
-        user.setPhone("13800138000");
-        user.setPassword("111111");
-        return user;
+    private Account createTestUser() {
+        Account account = new Account();
+        account.setPhone("13800138000");
+        account.setPassword("111111");
+        return account;
     }
 
     private ItineraryRequest createTestItineraryRequest() {

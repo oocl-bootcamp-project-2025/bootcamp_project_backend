@@ -106,22 +106,37 @@ public class RouteService {
             throw new RuntimeException(e);
         }
         try {
-            JsonNode routeNode = mapper.readTree(response);
-            logger.info("Route Response: {}", mapper.writeValueAsString(routeNode));
+            JsonNode rootNode = mapper.readTree(response);
+            logger.info("Route Response: {}", mapper.writeValueAsString(rootNode));
+
+            JsonNode routeNode = rootNode.get("route");
+            if (routeNode == null) {
+                logger.error("No route data found in response");
+                throw new JsonProcessingException("No route data found") {};
+            }
             List<PathDTO> paths = new ArrayList<>();
-            for (JsonNode path : routeNode.get("paths")) {
-                String duration = path.get("cost").get("duration").asText();
-                String tolls = path.get("cost").get("tolls").asText();
-                String toll_distance = path.get("cost").get("toll_distance").asText();
-                String traffic_lights = path.get("cost").get("traffic_lights").asText();
-                CostDTO cost = new CostDTO(duration, tolls, toll_distance, traffic_lights);
+            JsonNode pathsNode = routeNode.get("paths");
+            if (pathsNode == null || !pathsNode.isArray()) {
+                throw new JsonProcessingException("Invalid paths data") {
+                };
+            }
+            for (JsonNode path : pathsNode) {
+                JsonNode pathCostNode = path.get("cost");
+                CostDTO cost = new CostDTO(
+                        pathCostNode.get("duration").asText(),
+                        pathCostNode.get("tolls").asText(),
+                        pathCostNode.get("toll_distance").asText(),
+                        pathCostNode.get("traffic_lights").asText()
+                );
                 List<StepDTO> steps = new ArrayList<>();
-                for (JsonNode step : path.get("steps")) {
+                JsonNode stepsNode = path.get("steps");
+                for (JsonNode step : stepsNode) {
+                    JsonNode stepCostNode = step.get("cost");
                     CostDTO costDTO = new CostDTO(
-                            step.get("cost").get("duration").asText(),
-                            step.get("cost").get("tolls").asText(),
-                            step.get("cost").get("toll_distance").asText(),
-                            step.get("cost").get("traffic_lights").asText()
+                            stepCostNode.get("duration").asText(),
+                            stepCostNode.get("tolls").asText(),
+                            stepCostNode.get("toll_distance").asText(),
+                            stepCostNode.get("traffic_lights").asText()
                     );
                     StepDTO stepDTO = new StepDTO(
                             step.get("instruction").asText(),

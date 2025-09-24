@@ -3,11 +3,11 @@ package com.oocl.bootcampbackend.service;
 import com.oocl.bootcampbackend.controller.dto.ItineraryRequest;
 import com.oocl.bootcampbackend.controller.dto.TripDTO;
 import com.oocl.bootcampbackend.entity.Trip;
-import com.oocl.bootcampbackend.entity.User;
-import com.oocl.bootcampbackend.exception.NotExistingUserException;
+import com.oocl.bootcampbackend.entity.Account;
+import com.oocl.bootcampbackend.exception.NotExistingAccountException;
 import com.oocl.bootcampbackend.exception.NullPhoneException;
 import com.oocl.bootcampbackend.repository.TripRepository;
-import com.oocl.bootcampbackend.repository.UserRepository;
+import com.oocl.bootcampbackend.repository.AccountRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,16 +23,16 @@ public class TripService {
     @Autowired
     private TripRepository tripRepository;
     @Autowired
-    private UserRepository userRepository;
+    private AccountRepository accountRepository;
     @Transactional
     public void save(ItineraryRequest itineraryRequest) {
         String phone = itineraryRequest.getPhoneNumber();
         if (phone == null || phone.isEmpty()){
             throw new NullPhoneException("phone is null");
         }
-        User user = userRepository.findByPhone(phone);
-        if (user == null) {
-            throw new NotExistingUserException("user is not exist");
+        Account account = accountRepository.findByPhone(phone);
+        if (account == null) {
+            throw new NotExistingAccountException("user is not exist");
         }
 
         Map<String, List<TripDTO>> itineraryData = itineraryRequest.getItineraryData();
@@ -52,10 +52,10 @@ public class TripService {
                 trip.setExperts(String.join(",", String.join(",", experts != null ? experts : Collections.emptyList())));
                 trip.setStart(tripDTO.getStart());
                 trip.setDay(dayKey); // 关联到day1、day2等
-                trip.setUser(user); // 关联到当前用户
+                trip.setAccount(account); // 关联到当前用户
                 trip.setDone(false); // 默认未完成
                 tripRepository.save(trip);
-                user.getTrips().add(trip);
+                account.getTrips().add(trip);
             }
         }
     }
