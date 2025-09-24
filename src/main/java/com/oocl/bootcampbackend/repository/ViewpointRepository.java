@@ -8,6 +8,7 @@ public interface ViewpointRepository {
     Viewpoint save(Viewpoint viewpoint);
     List<String> findArea(String area);
     List<String> findAllArea();
+    List<Viewpoint> findViewPointsByPreference(int[] preference);
     public List<String> findAllAreaTemp();
 
 }
