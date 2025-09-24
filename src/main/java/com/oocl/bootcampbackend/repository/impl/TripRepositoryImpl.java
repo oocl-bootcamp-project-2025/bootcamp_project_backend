@@ -1,7 +1,7 @@
 package com.oocl.bootcampbackend.repository.impl;
 
 import com.oocl.bootcampbackend.entity.Trip;
-import com.oocl.bootcampbackend.entity.User;
+import com.oocl.bootcampbackend.entity.Account;
 import com.oocl.bootcampbackend.repository.TripRepository;
 import com.oocl.bootcampbackend.repository.dao.TripJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,8 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public List<Trip> findByUser(User user) {
-        return tripJpaRepository.findByUser(user);
+    public List<Trip> findByAccount(Account account) {
+        return tripJpaRepository.findByAccount(account);
     }
 
     @Override

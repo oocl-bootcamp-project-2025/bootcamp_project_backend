@@ -21,16 +21,17 @@ public class Trip {
     private String images;
     private String experts;
     private String start;
+    @Column(name = "trip_day")
     private String day;
     private Boolean isDone;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-            name = "user_id",
+            name = "account_id",
             referencedColumnName = "id",
             nullable = false
     )
-    private User user;
+    private Account account;
 
     public Long getId() {
         return id;
@@ -98,10 +99,10 @@ public class Trip {
     public void setDay(String day) {
         this.day = day;
     }
-    public User getUser() {
-        return user;
+    public Account getAccount() {
+        return account;
     }
-    public void setUser(User user) {
-        this.user = user;
+    public void setAccount(Account user) {
+        this.account = user;
     }
 }

@@ -1,4 +1,4 @@
-create table if not exists attraction (
+create table attraction (
     id BIGINT auto_increment primary key,
     area nvarchar(255) null,
     name nvarchar(255) null,
@@ -6,6 +6,6 @@ create table if not exists attraction (
     location nvarchar(255) null,
     longitude double null,
     latitude double null,
-    images JSON null,
+    images varchar(255) null,
     duration int null
 );

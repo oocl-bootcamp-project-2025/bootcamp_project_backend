@@ -1,31 +1,50 @@
 package com.oocl.bootcampbackend.service;
 
+import com.oocl.bootcampbackend.controller.dto.AccountDTO;
 import com.oocl.bootcampbackend.entity.Account;
+import com.oocl.bootcampbackend.exception.ErrorPasswordException;
+import com.oocl.bootcampbackend.exception.ExistingAccountException;
+import com.oocl.bootcampbackend.exception.NotExistingAccountException;
 import com.oocl.bootcampbackend.repository.AccountRepository;
-import com.oocl.bootcampbackend.repository.ViewpointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import static com.oocl.bootcampbackend.util.JwtUtil.generateToken;
 
 @Service
 public class AccountService {
-
     @Autowired
     private AccountRepository accountRepository;
 
-    public String register(Account account) {
-        if (accountRepository.findByPhone(account.getPhone()) == null) {
-            accountRepository.save(account);
-            return "Register Success";
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public String login(AccountDTO accountDTO) {
+        String phone = accountDTO.getPhone();
+        String password = accountDTO.getPassword();
+        if (!accountRepository.isExistingPhone(phone))
+        {
+            throw new NotExistingAccountException("user not exists");
         }
-        return "Register Fail";
+        if (!passwordEncoder.matches(password, accountRepository.findPasswordByPhone(phone))) {
+            throw new ErrorPasswordException("password not match");
+        }
+        // 登录成功，生成JWT token
+        return generateToken(phone);
     }
 
-    public String login(Account account) {
-        if (accountRepository.findByPhone(account.getPhone())!=null && accountRepository.findByPhone(account.getPhone()).getPassword().equals(account.getPassword())) {
-            return "Login Success";
+    public void register(AccountDTO accountDTO) {
+        if (accountRepository.isExistingPhone(accountDTO.getPhone())) {
+            throw new ExistingAccountException("phone already exists");
         }
-        return "Login Fail";
+
+        // 密码加密：使用 BCrypt 加密原始密码
+        String rawPassword = accountDTO.getPassword();
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        Account account = new Account();
+        account.setPhone(accountDTO.getPhone());
+        account.setPassword(encodedPassword);
+        accountRepository.save(account);
     }
 }
