@@ -18,4 +18,12 @@ public class AttractionRepositoryDBImplementation implements AttractionRepositor
                 .filter(attraction -> attraction.getName().contains(name))
                 .toList();
     }
+
+    public Attraction findById(long id) {
+        return attractionJpaRepository
+                .findById(id)
+                .stream()
+                .findFirst()
+                .orElse(null);
+    }
 }
