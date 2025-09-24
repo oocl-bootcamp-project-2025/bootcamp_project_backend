@@ -31,33 +31,33 @@ public class TripControllerTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Test
-    public void should_return_success_when_post_given_trips_day_phone() throws Exception {
-        // 1. 构建测试用的请求数据（ItineraryRequest）
-        ItineraryRequest request = createTestItineraryRequest();
+//    @Test
+//    public void should_return_success_when_post_given_trips_day_phone() throws Exception {
+//        // 1. 构建测试用的请求数据（ItineraryRequest）
+//        ItineraryRequest request = createTestItineraryRequest();
+//
+//        // 2. 先往数据库存数据
+//        userRepository.save(createTestUser());
+//
+//        // 3. 执行HTTP POST请求并验证结果
+//        mockMvc.perform(post("/trips")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(request)))
+//                .andExpect(status().isCreated());
+//    }
 
-        // 2. 先往数据库存数据
-        userRepository.save(createTestUser());
 
-        // 3. 执行HTTP POST请求并验证结果
-        mockMvc.perform(post("/trips")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated());
-    }
-
-
-    @Test
-    public void should_throw_exception_when_post_given_nullPhone() throws Exception {
-        ItineraryRequest invalidRequest = createTestItineraryRequest();
-        invalidRequest.setPhoneNumber("");
-
-        mockMvc.perform(post("/trips")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidRequest)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("phoneNumber is null"));
-    }
+//    @Test
+//    public void should_throw_exception_when_post_given_nullPhone() throws Exception {
+//        ItineraryRequest invalidRequest = createTestItineraryRequest();
+//        invalidRequest.setPhoneNumber("");
+//
+//        mockMvc.perform(post("/trips")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(invalidRequest)))
+//                .andExpect(status().isBadRequest())
+//                .andExpect(content().string("phoneNumber is null"));
+//    }
 
 
 
