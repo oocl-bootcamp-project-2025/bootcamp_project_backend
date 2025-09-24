@@ -29,7 +29,8 @@ public class KouziAgentService {
      */
     public void streamChatWithCoze(String botId, String userId, String content, Consumer<String> onData) throws IOException {
         OkHttpClient client = new OkHttpClient();
-        String url = "https://api.coze.cn/v3/chat?";
+        String url = kouziApiUrl != null && !kouziApiUrl.isEmpty() ? kouziApiUrl : "https://api.coze.cn/v3/chat?";
+        String apiKey = kouziApiKey != null && !kouziApiKey.isEmpty() ? kouziApiKey : "pat_YYDHIzVdqWVzwbLS3HlZITrMHJtEGI2SVOGNqp5gkWDc6GxF7O6KYM90zE4we10p";
         String json = "{" +
                 "\"bot_id\": \"" + botId + "\"," +
                 "\"user_id\": \"" + userId + "\"," +
@@ -40,7 +41,7 @@ public class KouziAgentService {
         RequestBody body = RequestBody.create(json, MediaType.parse("application/json"));
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader("Authorization", "Bearer pat_YYDHIzVdqWVzwbLS3HlZITrMHJtEGI2SVOGNqp5gkWDc6GxF7O6KYM90zE4we10p")
+                .addHeader("Authorization", "Bearer " + apiKey)
                 .addHeader("Content-Type", "application/json")
                 .post(body)
                 .build();
@@ -161,4 +162,3 @@ public class KouziAgentService {
         return attractions;
     }
 }
-
