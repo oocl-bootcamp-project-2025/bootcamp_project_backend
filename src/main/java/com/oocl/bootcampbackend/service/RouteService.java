@@ -1,7 +1,10 @@
 package com.oocl.bootcampbackend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oocl.bootcampbackend.controller.dto.OptimizedRouteDTO;
+import com.oocl.bootcampbackend.controller.dto.RouteDTO;
 import com.oocl.bootcampbackend.entity.Attraction;
 import com.oocl.bootcampbackend.entity.Viewpoint;
 import com.oocl.bootcampbackend.model.Point;
@@ -15,13 +18,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class RouteService {
     private final int dailyAttractionCount = 3;
     private static final ObjectMapper mapper = new ObjectMapper();
-    private static final String ROUTE_API_URL = "https://sito-routeplanner.up.railway.app/api/tsp/solver/distance";
+    private static final String ITINERARY_API_URL = "https://sito-routeplanner.up.railway.app/api/tsp/solver/distance";
+    private static final String ROUTE_API_URL = "https://sito-routeplanner.up.railway.app/api/routePlanner";
     private static final Logger logger = LoggerFactory.getLogger(RouteService.class);
 
     @Autowired
@@ -39,7 +42,7 @@ public class RouteService {
                 .toList();
     }
 
-    public List<List<Attraction>> routePlanner(int[] preference, int days) {
+    private List<List<Attraction>> itineraryPlanner(int[] preference, int days) {
         List<Viewpoint> viewpoints = viewpointRepository.findViewPointsByPreference(preference);
         List<Attraction> attractions = getAttractions(viewpoints).stream().limit((long) days * dailyAttractionCount).toList();
 
@@ -48,13 +51,13 @@ public class RouteService {
                 .toList();
         RouteRequestBody requestBody = new RouteRequestBody(points, 1);
 
-        List<List<Attraction>> route = new ArrayList<>();
+        List<List<Attraction>> itinerary = new ArrayList<>();
         try {
             // Request body to json
             String jsonRequestBody = mapper.writeValueAsString(requestBody);
-            logger.info("Request Body: " + jsonRequestBody);
-            String response = HttpService.sendPost(ROUTE_API_URL, jsonRequestBody);
-            logger.info("Response: " + response);
+            logger.debug("Request Body: " + jsonRequestBody);
+            String response = HttpService.sendPost(ITINERARY_API_URL, jsonRequestBody);
+            logger.debug("Response: " + response);
             JsonNode orderNode = mapper.readTree(response).get("order");
             int[] order = new int[0];
             if (orderNode != null && orderNode.isArray()) {
@@ -71,13 +74,46 @@ public class RouteService {
                         dayRoute.add(attractions.get(order[index]));
                     }
                 }
-                route.add(dayRoute);
+                itinerary.add(dayRoute);
             }
-            return route;
+            return itinerary;
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("Error in routePlanner: " + e.getMessage());
+            logger.error("Error in routePlanner: {}", e.getMessage());
             return new ArrayList<>();
+        }
+    }
+
+    private List<Point> getPointsFromItinerary(List<List<Attraction>> itinerary) {
+        List<Point> points = new ArrayList<>();
+        for (List<Attraction> day : itinerary) {
+            for (Attraction attraction : day) {
+                points.add(new Point(attraction.getLongitude(), attraction.getLatitude()));
+            }
+        }
+        return points;
+    }
+
+    public OptimizedRouteDTO routePlanner(String area, int[] preference, int days) {
+        List<List<Attraction>> itinerary = itineraryPlanner(preference, days);
+        List<Point> points = getPointsFromItinerary(itinerary);
+        RouteRequestBody requestBody = new RouteRequestBody(points, 1);
+        String response;
+        try {
+            String jsonRequestBody = mapper.writeValueAsString(requestBody);
+            logger.debug("Request Body: " + jsonRequestBody);
+            response = HttpService.sendPost(ROUTE_API_URL, jsonRequestBody);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            JsonNode routeNode = mapper.readTree(response);
+            OptimizedRouteDTO optimizedRouteDTO = new OptimizedRouteDTO(itinerary, mapper.treeToValue(routeNode, RouteDTO.class));
+            logger.info("OptimizedRouteDTO: {}", mapper.writeValueAsString(optimizedRouteDTO));
+            return optimizedRouteDTO;
+        } catch (Exception e) {
+            logger.error("Error in routePlanner: {}", e.getMessage());
+            return null;
         }
     }
 }
