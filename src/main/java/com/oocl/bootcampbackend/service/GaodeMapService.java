@@ -15,6 +15,7 @@ import java.util.*;
 
 @Service
 public class GaodeMapService {
+    @Value("${}")
     @Value("${gaode.api.key}")
     private String gaodeApiKey;
 
