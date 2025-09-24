@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,8 +46,10 @@ public class TripService {
                 trip.setDuration(tripDTO.getDuration());
                 trip.setTime(tripDTO.getTime());
                 trip.setLocation(tripDTO.getLocation());
-                trip.setImages(String.join(",", tripDTO.getImages()));
-                trip.setExperts(String.join(",", tripDTO.getExperts()));
+                List<String> images = tripDTO.getImages();
+                trip.setImages(String.join(",", String.join(",", images != null ? images : Collections.emptyList())));
+                List<String> experts = tripDTO.getExperts();
+                trip.setExperts(String.join(",", String.join(",", experts != null ? experts : Collections.emptyList())));
                 trip.setStart(tripDTO.getStart());
                 trip.setDay(dayKey); // 关联到day1、day2等
                 trip.setUser(user); // 关联到当前用户
