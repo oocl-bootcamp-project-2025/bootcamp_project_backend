@@ -85,7 +85,7 @@ public class AccountControllerTest {
         mockMvc.perform(post("/accounts/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidUser)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isConflict())
                 .andExpect(content().string("phone already exists"));
     }
 
