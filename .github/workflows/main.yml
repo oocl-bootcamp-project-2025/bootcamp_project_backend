@@ -41,7 +41,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run tests
-        run: ./gradlew test
+        run: ./gradlew test --debug
 
       - name: Generate test report
         uses: dorny/test-reporter@v1
