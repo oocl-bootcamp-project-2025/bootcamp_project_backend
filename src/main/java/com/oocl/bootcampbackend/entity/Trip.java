@@ -20,6 +20,7 @@ public class Trip {
     private String location;
     private String images;
     private String experts;
+    @Column(name = "start", nullable = true)
     private String start;
     @Column(name = "trip_day")
     private String day;
