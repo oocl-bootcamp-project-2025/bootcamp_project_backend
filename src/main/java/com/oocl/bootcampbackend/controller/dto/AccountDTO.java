@@ -2,7 +2,7 @@ package com.oocl.bootcampbackend.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-public class UserDTO {
+public class AccountDTO {
     @NotBlank(message = "手机号不能为空")
     private String phone;
 
