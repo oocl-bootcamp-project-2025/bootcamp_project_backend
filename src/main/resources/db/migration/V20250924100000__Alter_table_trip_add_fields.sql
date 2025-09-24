@@ -1,4 +1,3 @@
--- 为trip表新增行程相关字段，适配实体类扩展属性（修复位置冲突和语法错误）
 ALTER TABLE trip ADD COLUMN name VARCHAR(100) NOT NULL;
 ALTER TABLE trip ADD COLUMN start VARCHAR(100) NOT NULL;
 ALTER TABLE trip ADD COLUMN description TEXT DEFAULT NULL;
