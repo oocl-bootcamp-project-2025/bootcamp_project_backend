@@ -129,20 +129,20 @@ public class UserControllerTest {
      * 测试场景： 正常登录
      * 预期结果：返回201
      */
-//    @Test
-//    public void should_return_201_when_login_given_valid_user() throws Exception {
-//        UserDTO validUser = new UserDTO();
-//        validUser.setPhone("13800138000");
-//        validUser.setPassword("Password123");
-//        mockMvc.perform(post("/users/register")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(validUser)))
-//                .andExpect(status().isCreated());
-//        mockMvc.perform(post("/users/login")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(validUser)))
-//                .andExpect(status().isCreated());
-//    }
+    @Test
+    public void should_return_201_when_login_given_valid_user() throws Exception {
+        UserDTO validUser = new UserDTO();
+        validUser.setPhone("13800138000");
+        validUser.setPassword("Password123");
+        mockMvc.perform(post("/users/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validUser)))
+                .andExpect(status().isCreated());
+        mockMvc.perform(post("/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validUser)))
+                .andExpect(status().isCreated());
+    }
     /**
      * 测试场景： 登录时手机号不存在
      * 预期结果：返回400 Bad Request
