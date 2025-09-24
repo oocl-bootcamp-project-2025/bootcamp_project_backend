@@ -7,12 +7,12 @@ public class StepDTO {
     private CostDTO cost;
     private String polyline;
 
-    public StepDTO(String instruction, String orientation, String polyline, String step_distance, CostDTO cost) {
+    public StepDTO(String instruction, String orientation, String step_distance, CostDTO cost, String polyline) {
         this.instruction = instruction;
         this.orientation = orientation;
-        this.polyline = polyline;
         this.step_distance = step_distance;
         this.cost = cost;
+        this.polyline = polyline;
     }
 
     public String getInstruction() {

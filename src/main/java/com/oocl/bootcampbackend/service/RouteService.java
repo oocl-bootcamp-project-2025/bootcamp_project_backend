@@ -3,8 +3,7 @@ package com.oocl.bootcampbackend.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oocl.bootcampbackend.controller.dto.OptimizedRouteDTO;
-import com.oocl.bootcampbackend.controller.dto.RouteDTO;
+import com.oocl.bootcampbackend.controller.dto.*;
 import com.oocl.bootcampbackend.entity.Attraction;
 import com.oocl.bootcampbackend.entity.Viewpoint;
 import com.oocl.bootcampbackend.model.Point;
@@ -108,7 +107,46 @@ public class RouteService {
         }
         try {
             JsonNode routeNode = mapper.readTree(response);
-            OptimizedRouteDTO optimizedRouteDTO = new OptimizedRouteDTO(itinerary, mapper.treeToValue(routeNode, RouteDTO.class));
+            logger.info("Route Response: {}", mapper.writeValueAsString(routeNode));
+            List<PathDTO> paths = new ArrayList<>();
+            for (JsonNode path : routeNode.get("paths")) {
+                String duration = path.get("cost").get("duration").asText();
+                String tolls = path.get("cost").get("tolls").asText();
+                String toll_distance = path.get("cost").get("toll_distance").asText();
+                String traffic_lights = path.get("cost").get("traffic_lights").asText();
+                CostDTO cost = new CostDTO(duration, tolls, toll_distance, traffic_lights);
+                List<StepDTO> steps = new ArrayList<>();
+                for (JsonNode step : path.get("steps")) {
+                    CostDTO costDTO = new CostDTO(
+                            step.get("cost").get("duration").asText(),
+                            step.get("cost").get("tolls").asText(),
+                            step.get("cost").get("toll_distance").asText(),
+                            step.get("cost").get("traffic_lights").asText()
+                    );
+                    StepDTO stepDTO = new StepDTO(
+                            step.get("instruction").asText(),
+                            step.get("orientation").asText(),
+                            step.get("step_distance").asText(),
+                            costDTO,
+                            step.get("polyline").asText()
+                    );
+                    steps.add(stepDTO);
+                }
+                PathDTO pathDTO = new PathDTO(
+                        path.get("distance").asText(),
+                        path.get("restriction").asText(),
+                        cost,
+                        steps
+                );
+                paths.add(pathDTO);
+            }
+            RouteDTO route = new RouteDTO(
+                    routeNode.get("origin").asText(),
+                    routeNode.get("destination").asText(),
+                    routeNode.get("taxi_cost").asText(),
+                    paths
+            );
+            OptimizedRouteDTO optimizedRouteDTO = new OptimizedRouteDTO(itinerary, route);
             logger.info("OptimizedRouteDTO: {}", mapper.writeValueAsString(optimizedRouteDTO));
             return optimizedRouteDTO;
         } catch (Exception e) {
