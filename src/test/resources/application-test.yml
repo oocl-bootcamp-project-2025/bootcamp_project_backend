@@ -1,16 +1,15 @@
 spring:
+  config:
+    activate:
+      on-profile:
+        - test
   datasource:
-    # Use H2 in-memory database for testing
-    url: jdbc:h2:mem:testdb;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb; # use in memory db
+    driverClassName: org.h2.Driver
   jpa:
-    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: none
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-    validate-on-migrate: true
+      ddl-auto: validate # disable DB schema creation from entity
+  h2:
+    console:
+      enabled: true # enable h2 web console

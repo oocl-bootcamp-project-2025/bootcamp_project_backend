@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +20,8 @@ import java.util.Map;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -33,13 +36,10 @@ public class TripControllerTest {
 
     @Test
     public void should_return_success_when_post_given_trips_day_phone() throws Exception {
-        // 1. 构建测试用的请求数据（ItineraryRequest）
         ItineraryRequest request = createTestItineraryRequest();
 
-        // 2. 先往数据库存数据
         userRepository.save(createTestUser());
 
-        // 3. 执行HTTP POST请求并验证结果
         mockMvc.perform(post("/trips")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -56,7 +56,7 @@ public class TripControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("phoneNumber is null"));
+                .andExpect(content().string("phone is null"));
     }
 
 
