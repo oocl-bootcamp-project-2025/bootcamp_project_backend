@@ -9,7 +9,8 @@ import com.oocl.bootcampbackend.repository.AttractionRepository;
 import com.oocl.bootcampbackend.repository.ViewpointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Attr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,8 @@ public class RouteService {
     private final int dailyAttractionCount = 3;
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final String ROUTE_API_URL = "https://sito-routeplanner.up.railway.app/api/tsp/solver/distance";
+    private static final Logger logger = LoggerFactory.getLogger(RouteService.class);
+
     @Autowired
     private ViewpointRepository viewpointRepository;
 
@@ -46,8 +49,19 @@ public class RouteService {
 
         List<List<Attraction>> route = new ArrayList<>();
         try {
-            String response = HttpService.sendPost(ROUTE_API_URL, requestBody.toString());
-            int[] order = mapper.readTree(response).get("order").traverse().readValueAs(int[].class);
+            // Request body to json
+            String jsonRequestBody = mapper.writeValueAsString(requestBody);
+            logger.info("Request Body: " + jsonRequestBody);
+            String response = HttpService.sendPost(ROUTE_API_URL, jsonRequestBody);
+            logger.info("Response: " + response);
+            JsonNode orderNode = mapper.readTree(response).get("order");
+            int[] order = new int[0];
+            if (orderNode != null && orderNode.isArray()) {
+                order = new int[orderNode.size()];
+                for (int i = 0; i < orderNode.size(); i++) {
+                    order[i] = orderNode.get(i).asInt();
+                }
+            }
             for (int i = 0; i < days; i++) {
                 List<Attraction> dayRoute = new ArrayList<>();
                 for (int j = 0; j < dailyAttractionCount; j++) {
@@ -61,6 +75,7 @@ public class RouteService {
             return route;
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("Error in routePlanner: " + e.getMessage());
             return new ArrayList<>();
         }
     }

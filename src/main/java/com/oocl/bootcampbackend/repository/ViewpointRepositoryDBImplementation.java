@@ -41,7 +41,7 @@ public class ViewpointRepositoryDBImplementation implements ViewpointRepository 
                 .stream()
                 .filter(viewpoint -> {
                     String prefs = viewpoint.getPreference();
-                    for (int pref: preference) {
+                    for (int pref : preference) {
                         if (prefs.contains(String.valueOf(pref))) {
                             return true;
                         }
