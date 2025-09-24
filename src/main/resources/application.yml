@@ -11,6 +11,13 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: validate
+  flyway:
+    enabled: true
+    locations: classpath:db/migration/common,classpath:db/migration/mysql
+    baseline-on-migrate: true
+    validate-on-migrate: true
+    placeholders:
+      alter_syntax: MODIFY COLUMN
 
 kouzi:
   api:

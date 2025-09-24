@@ -1,0 +1,1 @@
+ALTER TABLE trip ${alter_syntax} COLUMN start VARCHAR(100) NULL;
