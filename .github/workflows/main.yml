@@ -44,7 +44,7 @@ jobs:
         run: ./gradlew test
         env:
           MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Generate test report
