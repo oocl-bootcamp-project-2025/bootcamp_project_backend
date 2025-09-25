@@ -161,7 +161,7 @@ jobs:
   deploy-prod:
     needs: [test]
     runs-on: ubuntu-latest
-    environment: prod  # 使用GitHub Environment保护，需要手动approval
+    environment: prod
     if: github.ref == 'refs/heads/release'
 
     steps:
@@ -197,7 +197,7 @@ jobs:
       - name: Deploy to Railway PROD Service
         run: |
           echo "Starting deployment to Railway PROD..."
-          railway up --service ${{ secrets.RAILWAY_SERVICE_ID }}
+          railway up --service ${{ secrets.RAILWAY_SERVICE_ID }} --token "${{ secrets.RAILWAY_TOKEN }}" --project "${{ secrets.RAILWAY_PROJECT_ID }}"
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
