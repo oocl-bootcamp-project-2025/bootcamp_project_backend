@@ -1,5 +1,6 @@
 package com.oocl.bootcampbackend.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oocl.bootcampbackend.entity.Attraction;
 import com.oocl.bootcampbackend.service.KouziAgentService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +19,8 @@ import java.util.Map;
 public class KouziAgentController {
     @Autowired
     private KouziAgentService kouziAgentService;
+
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     // 流式对话接口
     @PostMapping(value = "/streamChat")
@@ -48,6 +52,14 @@ public class KouziAgentController {
         String userId = request.getOrDefault("userId", "1");
         String content = request.getOrDefault("content", "");
         return ResponseEntity.ok(kouziAgentService.getAttractionsFromKouziAgent(botId, userId, content));
+    }
+
+    @PostMapping("/streamCollectV3")
+    public ResponseEntity<List<Attraction>> chatAndCollectV3(@RequestBody Map<String, String> request) throws IOException {
+        String area = request.getOrDefault("area", "北京");
+        List<Integer> preference = Arrays.stream(request.getOrDefault("preference", "1,2,3").split(",")).map(Integer::valueOf).toList();
+        int days = Integer.parseInt(request.getOrDefault("days", "2"));
+        return ResponseEntity.ok(kouziAgentService.getAttractionsFromKouziAgentForService(area, preference, days));
     }
 }
 
