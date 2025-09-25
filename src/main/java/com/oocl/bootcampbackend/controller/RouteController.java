@@ -18,19 +18,6 @@ public class RouteController {
     private RouteService routeService;
 
     @GetMapping("/planner")
-    public OptimizedRouteDTO routePlanner(
-            @RequestParam("area") String area,
-            @RequestParam("preference") List<Integer> preference,
-            @RequestParam("days") int days
-    ) {
-        return routeService.routePlanner(
-                area,
-                preference.stream().mapToInt(i -> i).toArray(),
-                days
-        );
-    }
-
-    @GetMapping("/plannerByAI")
     public OptimizedRouteDTO routePlannerByAI(
             @RequestParam("area") String area,
             @RequestParam("preference") List<Integer> preference,
