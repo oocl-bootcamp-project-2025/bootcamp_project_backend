@@ -26,4 +26,13 @@ public class AttractionRepositoryDBImplementation implements AttractionRepositor
                 .findFirst()
                 .orElse(null);
     }
+
+    public void saveAll(List<Attraction> attractions) {
+        attractionJpaRepository.saveAll(attractions);
+    }
+
+    public void save(Attraction attraction) {
+        attractionJpaRepository.save(attraction);
+    }
+
 }

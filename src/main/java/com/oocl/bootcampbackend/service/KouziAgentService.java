@@ -3,8 +3,11 @@ package com.oocl.bootcampbackend.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oocl.bootcampbackend.entity.Attraction;
+import com.oocl.bootcampbackend.repository.AttractionRepository;
+import com.oocl.bootcampbackend.repository.AttractionRepositoryDBImplementation;
 import okhttp3.*;
 import okhttp3.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,9 @@ public class KouziAgentService {
 
     @Value("${kouzi.api.key:}")
     private String kouziApiKey;
+
+    @Autowired
+    private AttractionRepository attractionRepository;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -165,7 +171,14 @@ public class KouziAgentService {
     public List<Attraction> getAttractionsFromKouziAgent(String botId, String userId, String prompt) {
         try {
             String result = streamChatWithCozeAndCollectContent(botId, userId, prompt);
-            return parseJsonToAttractionListForAgentV2(result);
+            List<Attraction> attractions = parseJsonToAttractionListForAgentV2(result);
+            for (Attraction attraction : attractions) {
+                List<Attraction> existing = attractionRepository.findByName(attraction.getName());
+                if (existing.isEmpty()) {
+                    attractionRepository.save(attraction);
+                }
+            }
+            return attractions;
         } catch (IOException e) {
             e.printStackTrace();
             return Collections.emptyList();
