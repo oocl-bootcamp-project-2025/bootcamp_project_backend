@@ -29,4 +29,17 @@ public class RouteController {
                 days
         );
     }
+
+    @GetMapping("/plannerByAI")
+    public OptimizedRouteDTO routePlannerByAI(
+            @RequestParam("area") String area,
+            @RequestParam("preference") List<Integer> preference,
+            @RequestParam("days") int days
+    ) {
+        return routeService.routePlannerByAI(
+                area,
+                preference.stream().mapToInt(i -> i).toArray(),
+                days
+        );
+    }
 }
