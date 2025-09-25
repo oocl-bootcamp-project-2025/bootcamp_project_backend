@@ -6,6 +6,6 @@ create table if not exists attraction (
     location nvarchar(255) null,
     longitude double null,
     latitude double null,
-    images JSON null,
+    images varchar(255) null,
     duration int null
 );

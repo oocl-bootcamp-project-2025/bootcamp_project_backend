@@ -1,29 +1,39 @@
 package com.oocl.bootcampbackend.controller;
 
-import com.oocl.bootcampbackend.entity.Account;
+import com.oocl.bootcampbackend.controller.dto.AccountDTO;
 import com.oocl.bootcampbackend.service.AccountService;
-import com.oocl.bootcampbackend.service.ViewpointService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/account")
 public class AccountController {
-
     @Autowired
     private AccountService accountService;
 
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody Account account) {
-        return ResponseEntity.status(HttpStatus.OK).body(accountService.register(account));
+    @PostMapping("/accounts/login")
+    public ResponseEntity<String> loginUser(@RequestBody @Valid AccountDTO accountDTO){
+        String token = accountService.login(accountDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(token);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> getAreas(@RequestBody Account account) {
-        return ResponseEntity.status(HttpStatus.OK).body(accountService.login(account));
+    @PostMapping("/accounts/register")
+    public ResponseEntity<Void> registerUser(@RequestBody @Valid AccountDTO accountDTO){
+        accountService.register(accountDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @GetMapping("/accounts/isLogin")
+    public ResponseEntity<Void> isLogin(){
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+
+
+
 }

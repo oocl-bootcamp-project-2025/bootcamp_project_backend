@@ -1,8 +1,16 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/
+    url: jdbc:mysql://localhost:3306/testing
     username: "root"
     password: "admin"
     driver-class-name: com.mysql.cj.jdbc.Driver
+
 server:
   port: ${PORT:8080}
+kouzi:
+  api:
+    url: https://api.coze.cn/v3/chat?
+    key: pat_YYDHIzVdqWVzwbLS3HlZITrMHJtEGI2SVOGNqp5gkWDc6GxF7O6KYM90zE4we10p
+gaode:
+  api:
+    key: 4ef53442f20206b88a091ed644de9025

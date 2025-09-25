@@ -9,12 +9,13 @@ public class Expert {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
-    private String icon;
-    private String area;
-    private String service;
-    private Double price;
-    private String bookedTimeslot;
-    private String xiaohongshu;
+    private String avatar;
+    private String location;
+    private String speciality;
+    private String xiaohongshuUrl;
+    private String serviceName;
+    private double price;
+    private String description;
 
     public long getId() {
         return id;
@@ -32,51 +33,59 @@ public class Expert {
         this.name = name;
     }
 
-    public String getIcon() {
-        return icon;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
-    public String getArea() {
-        return area;
+    public String getLocation() {
+        return location;
     }
 
-    public void setArea(String area) {
-        this.area = area;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    public String getService() {
-        return service;
+    public String getSpeciality() {
+        return speciality;
     }
 
-    public void setService(String service) {
-        this.service = service;
+    public void setSpeciality(String speciality) {
+        this.speciality = speciality;
     }
 
-    public Double getPrice() {
+    public String getXiaohongshuUrl() {
+        return xiaohongshuUrl;
+    }
+
+    public void setXiaohongshuUrl(String xiaohongshuUrl) {
+        this.xiaohongshuUrl = xiaohongshuUrl;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public String getBookedTimeslot() {
-        return bookedTimeslot;
+    public String getDescription() {
+        return description;
     }
 
-    public void setBookedTimeslot(String bookedTimeslot) {
-        this.bookedTimeslot = bookedTimeslot;
-    }
-
-    public String getXiaohongshu() {
-        return xiaohongshu;
-    }
-
-    public void setXiaohongshu(String xiaohongshu) {
-        this.xiaohongshu = xiaohongshu;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

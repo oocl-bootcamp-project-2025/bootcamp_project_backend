@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS trip (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    account_id BIGINT NOT NULL,
+    PRIMARY KEY (id)
+);

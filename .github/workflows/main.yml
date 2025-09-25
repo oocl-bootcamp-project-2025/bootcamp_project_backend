@@ -15,6 +15,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    environment: test
 
     steps:
       - name: Checkout code
@@ -40,7 +41,15 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run tests
-        run: ./gradlew test
+        run: ./gradlew test --debug
+        env:
+          VENDOR: h2
+          MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SPRING_DATASOURCE_URL: ${{ secrets.DATABASE_URL }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.MYSQL_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
 
       - name: Generate test report
         uses: dorny/test-reporter@v1
@@ -50,7 +59,7 @@ jobs:
           path: build/test-results/test/*.xml
           reporter: java-junit
 
-  deploy-degv:
+  deploy-dev:
     needs: [test]
     runs-on: ubuntu-latest
     environment: dev
@@ -76,8 +85,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
       - name: Build application
         run: ./gradlew build -x test
+        env:
+          VENDOR: mysql
+
 
       - name: Install Railway CLI
         if: github.event_name != 'pull_request'

@@ -1,15 +1,36 @@
 package com.oocl.bootcampbackend.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "account")
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
     private String phone;
+
     private String password;
+
+    @OneToMany(
+            mappedBy = "account",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Trip> trips = new ArrayList<>();
+
+    public void setTrip(Trip trip){
+        this.trips.add(trip);
+    }
 
     public Long getId() {
         return id;
@@ -33,5 +54,13 @@ public class Account {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Trip> getTrips() {
+        return trips;
+    }
+
+    public void setTrips(List<Trip> trips) {
+        this.trips = trips;
     }
 }

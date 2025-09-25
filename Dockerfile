@@ -1,22 +1,27 @@
-# Use OpenJDK 17 as base image
-FROM openjdk:17-jdk-slim
-
+# Stage 1: Build the application
+FROM gradle:8.8-jdk17-jammy AS build
 # Set working directory
 WORKDIR /app
 
 # Copy gradle files
+
 COPY gradle gradle
 COPY build.gradle settings.gradle gradlew ./
 RUN chmod +x gradlew
 
+# Download dependencies
+RUN ./gradlew build --no-daemon -x test -x check || return 0
+
 # Copy source code
-COPY src src
+COPY src ./src
 
-# Build the application
-RUN ./gradlew build -x test --no-daemon
+# Build application
+RUN ./gradlew build --no-daemon -x test
 
-# Copy the built jar
-RUN JAR_FILE=$(ls build/libs/*.jar | grep -v plain | head -n 1) && cp ${JAR_FILE} app.jar
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+
+COPY --from=build /app/build/libs/*.jar app.jar
 
 # Expose port
 EXPOSE 8080
