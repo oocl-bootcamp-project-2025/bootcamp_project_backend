@@ -24,4 +24,8 @@ public class ViewpointController {
         return ResponseEntity.status(HttpStatus.OK).body(viewpointService.getAllArea());
     }
 
+    @GetMapping("/areas_with_location")
+    public ResponseEntity<List<List<String>>> getAreaWithLocation() {
+        return ResponseEntity.status(HttpStatus.OK).body(viewpointService.getAllAreaWithLocation());
+    }
 }

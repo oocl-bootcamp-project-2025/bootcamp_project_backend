@@ -19,4 +19,8 @@ public class ViewpointService {
     public List<String> getAllArea() {
         return viewpointRepository.findAllArea();
     }
+
+    public List<List<String>> getAllAreaWithLocation() {
+        return viewpointRepository.findAllAreaWithLocation();
+    }
 }
