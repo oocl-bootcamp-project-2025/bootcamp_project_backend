@@ -9,6 +9,7 @@ public class ItineraryData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String itineraryData;
 
     public long getId() {
