@@ -215,9 +215,9 @@ public class KouziAgentService {
         String labelStr = String.join("， ", labels);
 
         // 拼接prompt
-        String prompt = area + days + "日" + labelStr + "类型景点推荐";
+        String prompt = area + days + "日" + labelStr + "类型景点推荐,安排景点数是天数的3倍，也就是1天行程安排3个景点，2天行程安排6个景点，3天行程安排9个景点，4天行程安排12个景点，5天行程安排15个景点";
 
-        String botId = "7553644953184780303";
+        String botId = "7554061723578859554";
         String userId = "1";
         return getAttractionsFromKouziAgent(botId, userId, prompt);
     }

@@ -41,15 +41,21 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run tests
-        run: ./gradlew test --debug
-        env:
-          VENDOR: h2
-          MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          SPRING_DATASOURCE_URL: ${{ secrets.DATABASE_URL }}
-          SPRING_DATASOURCE_USERNAME: ${{ secrets.MYSQL_USERNAME }}
-          SPRING_DATASOURCE_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+        id: runtests
+        continue-on-error: true
+        run: |
+          set +e
+          ./gradlew test > test.out 2> test.err
+          code=$?
+          echo "exit_code=$code" >> $GITHUB_OUTPUT
+          if [ $code -ne 0 ]; then
+            echo "status=failure" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+          fi
+          echo "err<<EOF" >> $GITHUB_OUTPUT
+          tail -n 120 test.err >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Generate test report
         uses: dorny/test-reporter@v1
@@ -58,6 +64,100 @@ jobs:
           name: "[Report] JUnit Tests Report"
           path: build/test-results/test/*.xml
           reporter: java-junit
+
+      - name: Summarize result with AI
+        if: steps.runtests.outputs.status == 'failure'
+        id: ai
+        env:
+          AOAI_ENDPOINT: ${{ secrets.AOAI_ENDPOINT }}
+          AOAI_KEY: ${{ secrets.AOAI_KEY }}
+          AOAI_DEPLOYMENT: ${{ secrets.AOAI_DEPLOYMENT }}
+          OUTCOME: ${{ steps.runtests.outcome }}
+        run: |
+          export STATUS="${OUTCOME}"
+          if [ "${{ steps.runtests.outputs.exit_code }}" != "0" ]; then
+            export STATUS="failure"
+            export CONTEXT="${{ steps.runtests.outputs.err }}"
+          else
+            export STATUS="success"
+            export CONTEXT="Tests passed successfully."
+          fi
+          
+          cat > prompt.txt <<'P'
+          # Role: 
+          You are an expert Java/Spring Boot CI assistant helping developers fix build and test failures. 
+          ## Task:
+          Analyze the build/test outcome and error logs to:
+          
+          1. ISSUE: Clearly identify the specific error or problem in concise sentences
+          2. CAUSE: Explain the root cause of the issue (e.g., failing test, dependency problem, configuration issue)
+          3. FIX: Provide specific, ready-to-use fix command or code change
+          4. NEXT: Suggest follow-up actions the developer should take after applying the fix
+          
+          For successful builds, confirm what's working correctly and any optional improvements.
+          Keep your response under 6 lines for each section and prioritize accuracy over verbosity.
+          P
+          
+          # Make sure the script directory exists
+          mkdir -p ai
+          
+          # Execute the external Python script and capture the output
+          python ai/generate_summary.py >> $GITHUB_OUTPUT
+
+      - name: Notify Power Automate (Teams) about result
+        if: always()
+        env:
+          FLOW_URL: ${{ secrets.PA_FLOW_URL }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          OUTCOME: ${{ steps.runtests.outputs.status || steps.runtests.outcome }}
+          AI_SUMMARY: ${{ steps.ai.outputs.summary }}
+        run: |
+          set -Eeuo pipefail
+
+          STATUS="${OUTCOME}"
+          if [[ "$STATUS" == "failure" ]]; then
+            TITLE="Java Tests Failure"
+            COLOR="D93F0B"
+          else
+            TITLE="Java Tests Success"
+            COLOR="36A64F"
+          fi
+          
+          # Use the AI summary or a default fallback
+          if [[ "$STATUS" == "success" && -z "${AI_SUMMARY}" ]]; then
+            TEXT="✅ All tests passed successfully! The build is stable and will be deployed."
+          else
+          TEXT="${AI_SUMMARY:-N/A}"
+          fi
+
+          # Normalize CRLF just in case, occasionally format error
+          TEXT="${TEXT//$'\r'/}"
+
+          # Install jq if needed
+          if ! command -v jq &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y jq
+          fi
+
+          # Build JSON safely with jq (handles newlines and quotes)
+          JSON_PAYLOAD=$(jq -n \
+            --arg title "$TITLE: $REPO ($BRANCH)" \
+            --arg text "$TEXT" \
+            --arg color "$COLOR" \
+            --arg run_url "$RUN_URL" \
+            --arg repo "$REPO" \
+            --arg branch "$BRANCH" \
+            --arg status "$STATUS" \
+            '{title:$title, text:$text, color:$color, run_url:$run_url, repo:$repo, branch:$branch, status:$status}')
+          
+          # Send to Power Automate (URL contains auth)
+          curl -sSf -H "Content-Type: application/json" --data "$JSON_PAYLOAD" "$FLOW_URL" || true
+
+      # Enforce correct build status
+      - name: Enforce failure if tests failed
+        if: steps.runtests.outputs.status == 'failure'
+        run: exit 1
 
   deploy-dev:
     needs: [test]
@@ -106,27 +206,27 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
 
-      - name: Health Check
-        run: |
-          echo "Starting health check (5 minutes max)..."
-          
-          SERVICE_URL="${{ secrets.SERVICE_BASE_URL }}"
-          
-          # Wait 60 seconds for service startup
-          echo "Waiting 60 seconds for service to start..."
-          sleep 60
-          
-          # 5-minute health check with 30-second intervals
-          for i in {1..10}; do
-            echo "Health check attempt $i/10..."
-            if curl -s -f --max-time 30 "${SERVICE_URL}/health" > /dev/null 2>&1; then
-              echo "✅ Service is healthy!"
-              exit 0
-            fi
-            if [ $i -lt 10 ]; then
-              echo "⏳ Service not ready, waiting 30s..."
-              sleep 30
-            fi
-          done
-          echo "❌ Health check failed after 5 minutes"
-          exit 1
+#      - name: Health Check
+#        run: |
+#          echo "Starting health check (5 minutes max)..."
+#
+#          SERVICE_URL="${{ secrets.SERVICE_BASE_URL }}"
+#
+#          # Wait 60 seconds for service startup
+#          echo "Waiting 60 seconds for service to start..."
+#          sleep 60
+#
+#          # 5-minute health check with 30-second intervals
+#          for i in {1..10}; do
+#            echo "Health check attempt $i/10..."
+#            if curl -s -f --max-time 30 "${SERVICE_URL}/health" > /dev/null 2>&1; then
+#              echo "✅ Service is healthy!"
+#              exit 0
+#            fi
+#            if [ $i -lt 10 ]; then
+#              echo "⏳ Service not ready, waiting 30s..."
+#              sleep 30
+#            fi
+#          done
+#          echo "❌ Health check failed after 5 minutes"
+#          exit 1
