@@ -35,7 +35,6 @@ class ExpertControllerTests {
     @Autowired
     private ExpertJpaRepository expertJpaRepository;
 
-
     Attraction createAttraction(String location) {
         Attraction attraction = new Attraction();
         attraction.setName(location);

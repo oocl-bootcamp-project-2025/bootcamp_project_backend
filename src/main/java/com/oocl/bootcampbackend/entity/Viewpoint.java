@@ -15,6 +15,7 @@ public class Viewpoint {
     private long id;
     private String name;
     private String area;
+    private String location;
     private String coordinate;
     private String preference;
 
@@ -40,6 +41,14 @@ public class Viewpoint {
 
     public void setArea(String area) {
         this.area = area;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public String getCoordinate() {
