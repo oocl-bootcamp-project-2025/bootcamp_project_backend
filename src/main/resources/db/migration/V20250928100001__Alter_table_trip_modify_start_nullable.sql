@@ -1,1 +1,1 @@
-ALTER TABLE trip ${alter_syntax} start VARCHAR(100) NULL;
+ALTER TABLE trip ${alter_syntax} `start` VARCHAR(100) NULL;
