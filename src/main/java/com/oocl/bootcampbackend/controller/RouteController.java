@@ -27,8 +27,8 @@ public class RouteController {
         );
     }
 
-    @PostMapping("plannerByAttractions")
-    public OptimizedRouteDTO getRoutePlanByAttractions(@RequestBody List<Attraction> attractions,@RequestParam int days) {
+    @PostMapping("plannerByAttractions/{days}")
+    public OptimizedRouteDTO getRoutePlanByAttractions(@RequestBody List<Attraction> attractions,@PathVariable int days) {
         return routeService.getRoutePlanByAttractions(attractions,days);
     }
 }
