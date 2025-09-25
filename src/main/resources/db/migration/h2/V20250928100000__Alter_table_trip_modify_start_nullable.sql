@@ -1,2 +1,0 @@
-ALTER TABLE trip
-    ALTER COLUMN start DROP NOT NULL;
