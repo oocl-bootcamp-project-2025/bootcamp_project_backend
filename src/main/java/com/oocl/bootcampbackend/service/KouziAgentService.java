@@ -181,4 +181,31 @@ public class KouziAgentService {
             return Collections.emptyMap();
         }
     }
+
+    public List<Attraction> getAttractionsFromKouziAgentForService(String area, List<Integer> preference, int days) {
+        // id-label 映射
+        Map<Integer, String> preferenceLabels = new HashMap<>();
+        preferenceLabels.put(1, "小众探索");
+        preferenceLabels.put(2, "文化历史");
+        preferenceLabels.put(3, "自然风光");
+        preferenceLabels.put(4, "美食购物");
+        preferenceLabels.put(5, "休闲娱乐");
+        preferenceLabels.put(6, "拍照出片");
+
+        // 拼接label字符串
+        List<String> labels = new ArrayList<>();
+        for (Integer id : preference) {
+            if (preferenceLabels.containsKey(id)) {
+                labels.add(preferenceLabels.get(id));
+            }
+        }
+        String labelStr = String.join("， ", labels);
+
+        // 拼接prompt
+        String prompt = area + days + "日" + labelStr + "类型景点推荐";
+
+        String botId = "7553644953184780303";
+        String userId = "1";
+        return getAttractionsFromKouziAgent(botId, userId, prompt);
+    }
 }
