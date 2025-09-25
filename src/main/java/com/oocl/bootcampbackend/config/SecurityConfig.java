@@ -28,6 +28,7 @@ public class SecurityConfig {
             .addFilterBefore(new TokenAuthFilter(), UsernamePasswordAuthenticationFilter.class)
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.GET, "/trips").authenticated()
+                .requestMatchers(HttpMethod.GET, "/accounts/isLogin").authenticated()
             .anyRequest().permitAll()
         )
         .formLogin(AbstractHttpConfigurer::disable)

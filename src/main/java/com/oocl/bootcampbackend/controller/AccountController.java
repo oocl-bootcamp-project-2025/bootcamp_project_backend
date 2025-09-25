@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,11 @@ public class AccountController {
     public ResponseEntity<Void> registerUser(@RequestBody @Valid AccountDTO accountDTO){
         accountService.register(accountDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/accounts/isLogin")
+    public ResponseEntity<Void> isLogin(){
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 
