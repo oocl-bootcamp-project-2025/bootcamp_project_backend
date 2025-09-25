@@ -3,7 +3,7 @@ package com.oocl.bootcampbackend.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "itinerary")
+@Table(name = "itinerary_data")
 public class ItineraryData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
