@@ -126,7 +126,11 @@ jobs:
           fi
           
           # Use the AI summary or a default fallback
+          if [[ "$STATUS" == "success" && -z "${AI_SUMMARY}" ]]; then
+            TEXT="✅ All tests passed successfully! The build is stable and ready for deployment."
+          else
           TEXT="${AI_SUMMARY:-N/A}"
+          fi
 
           # Normalize CRLF just in case, occasionally format error
           TEXT="${TEXT//$'\r'/}"
