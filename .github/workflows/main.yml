@@ -127,7 +127,7 @@ jobs:
           
           # Use the AI summary or a default fallback
           if [[ "$STATUS" == "success" && -z "${AI_SUMMARY}" ]]; then
-            TEXT="✅ All tests passed successfully! The build is stable and ready for deployment."
+            TEXT="✅ All tests passed successfully! The build is stable and will be deployed."
           else
           TEXT="${AI_SUMMARY:-N/A}"
           fi
