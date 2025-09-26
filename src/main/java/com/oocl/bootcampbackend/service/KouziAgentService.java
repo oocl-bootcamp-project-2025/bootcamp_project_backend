@@ -171,6 +171,7 @@ public class KouziAgentService {
         return attractions;
     }
 
+    //核心代码
     public List<Attraction> getAttractionsFromKouziAgent(String botId, String userId, String prompt) {
         try {
             String result = streamChatWithCozeAndCollectContent(botId, userId, prompt);
