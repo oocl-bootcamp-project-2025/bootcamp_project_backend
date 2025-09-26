@@ -28,6 +28,9 @@ public class KouziAgentService {
     @Autowired
     private AttractionRepository attractionRepository;
 
+    @Autowired
+    private GaodeMapService gaodeMapService;
+
     private final RestTemplate restTemplate = new RestTemplate();
 
     /**
@@ -168,14 +171,35 @@ public class KouziAgentService {
         return attractions;
     }
 
+    //核心代码
     public List<Attraction> getAttractionsFromKouziAgent(String botId, String userId, String prompt) {
         try {
             String result = streamChatWithCozeAndCollectContent(botId, userId, prompt);
             List<Attraction> attractions = parseJsonToAttractionListForAgentV2(result);
+            Map<String, String> locationByName = gaodeMapService.getLocationByName(
+                    attractions.stream().map(Attraction::getName).toList()
+            );
             for (Attraction attraction : attractions) {
                 List<Attraction> existing = attractionRepository.findByName(attraction.getName());
+                if (locationByName.containsKey(attraction.getName())) {
+                    String[] lngLat = locationByName.get(attraction.getName()).split(",");
+                    if (lngLat.length == 2) {
+                        try {
+                            attraction.setLongitude(Double.parseDouble(lngLat[0]));
+                            attraction.setLatitude(Double.parseDouble(lngLat[1]));
+                        } catch (NumberFormatException e) {
+                            // 忽略解析错误，保持原有值
+                        }
+                    }
+                }
                 if (existing.isEmpty()) {
-                    attractionRepository.save(attraction);
+                    long id = attractionRepository.save(attraction);
+                    System.out.println("Saved new attraction: " + attraction.getName() + " with ID " + id);
+                    attraction.setId(id);
+                }
+                else {
+                    attraction.setId(existing.get(0).getId());
+                    attraction.setImages(existing.get(0).getImages());
                 }
             }
             return attractions;
