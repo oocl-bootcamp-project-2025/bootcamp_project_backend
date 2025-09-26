@@ -31,8 +31,8 @@ public class AttractionRepositoryDBImplementation implements AttractionRepositor
         attractionJpaRepository.saveAll(attractions);
     }
 
-    public void save(Attraction attraction) {
-        attractionJpaRepository.save(attraction);
+    public long save(Attraction attraction) {
+        return attractionJpaRepository.save(attraction).getId();
     }
 
 }
