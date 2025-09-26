@@ -8,5 +8,5 @@ public interface AttractionRepository {
     List<Attraction> findByName(String name);
     Attraction findById(long id);
     void saveAll(List<Attraction> attractions);
-    void save(Attraction attraction);
+    long save(Attraction attraction);
 }
