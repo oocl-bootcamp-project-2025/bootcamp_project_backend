@@ -198,6 +198,7 @@ public class KouziAgentService {
                     attraction.setId(id);
                 }
                 else {
+                    attraction.setId(existing.get(0).getId());
                     attraction.setImages(existing.get(0).getImages());
                 }
             }
