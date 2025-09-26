@@ -176,13 +176,23 @@ public class KouziAgentService {
         try {
             String result = streamChatWithCozeAndCollectContent(botId, userId, prompt);
             List<Attraction> attractions = parseJsonToAttractionListForAgentV2(result);
-            Map<String, String> locationByName = gaodeMapService.getLocationByName(
-                    attractions.stream().map(Attraction::getName).toList()
-            );
+            List<String> params = new ArrayList<>();
+            for (Attraction attraction : attractions) {
+                String searchName = String.format("%s%s", attraction.getArea(), attraction.getName());
+                System.out.println("Searching location for: " + searchName);
+                params.add(searchName);
+            }
+            Map<String, String> locationByName = gaodeMapService.getLocationByName(params);
+            System.out.println("Locations found: " + locationByName.size());
             for (Attraction attraction : attractions) {
                 List<Attraction> existing = attractionRepository.findByName(attraction.getName());
-                if (locationByName.containsKey(attraction.getName())) {
-                    String[] lngLat = locationByName.get(attraction.getName()).split(",");
+                if (!locationByName.isEmpty() && locationByName.containsKey(attraction.getArea()+attraction.getName())) {
+                    // Print all key-value pairs in locationByName
+                    for (Map.Entry<String, String> entry : locationByName.entrySet()) {
+                        System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+                    }
+                    System.out.println("Attraction area + name: "+attraction.getArea()+attraction.getName());
+                    String[] lngLat = locationByName.get(attraction.getArea()+attraction.getName()).split(",");
                     if (lngLat.length == 2) {
                         try {
                             attraction.setLongitude(Double.parseDouble(lngLat[0]));
