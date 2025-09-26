@@ -177,6 +177,9 @@ public class KouziAgentService {
                 if (existing.isEmpty()) {
                     attractionRepository.save(attraction);
                 }
+                else {
+                    attraction.setImages(existing.get(0).getImages());
+                }
             }
             return attractions;
         } catch (IOException e) {
